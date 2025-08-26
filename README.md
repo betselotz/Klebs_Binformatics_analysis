@@ -203,13 +203,14 @@ fastp \
     --length_required 20 \                             # Discard reads shorter than 20 bp
     2>&1 | tee ./results/illumina/klebs/fastp/SRR28370701.fastp.log   # Save log file while printing to screen
 ```
+After running `fastp`, we downloaded the resulting HTML reports to our HPC home directory and our local computer for visualization.  
 
- - `fastp` also generates a report in `HTML` format. Let us download it and explore. First copy it to home (`~/`)
+1. **Copy the HTML results to your home directory on the cluster**
 
 ```bash
 cp ./results/illumina/klebs/fastp/SRR28370701.fastp.html ~/
 ```
- - Then download:
+2. **Transfer the Report to Your Local Computer** 
 
 ```bash
 rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370701.fastp.html ~/
