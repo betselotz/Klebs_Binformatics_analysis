@@ -326,7 +326,7 @@ rsync -avP --partial \
 ```bash                             
 #### 2. Download assembly to local machine
 
-rsync -avP --partial user3@hpc.ilri.cgiar.org:~/SRR28370682.fa \
+rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370682.fa \
     ~/AMR_training/group1/
 ```
 
