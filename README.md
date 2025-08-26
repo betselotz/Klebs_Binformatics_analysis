@@ -236,21 +236,21 @@ export TMPDIR="./results/illumina/klebs/tmp/shovill"
 # Run Shovill assembly
 ```bash
 shovill \
-  --R1 ./results/illumina/klebs/fastp/SRR28370701_trim_R1.fastq.gz \
-  --R2 ./results/illumina/klebs/fastp/SRR28370701_trim_R2.fastq.gz \
-  --gsize 5249449 \
-  --outdir ./results/illumina/klebs/shovill/SRR28370701 \
-  --assembler skesa \
-  --minlen 500 \
-  --mincov 2 \
-  --force \
-  --keepfiles \
-  --depth 0 \
-  --noreadcorr \
-  --namefmt "SRR28370701_%05d" \
-  --cpus 4 \
-  --ram 16 \
-  --tmpdir $TMPDIR
+  --R1 ./results/illumina/klebs/fastp/SRR28370701_trim_R1.fastq.gz \  # Forward reads (trimmed FASTQ)
+  --R2 ./results/illumina/klebs/fastp/SRR28370701_trim_R2.fastq.gz \  # Reverse reads (trimmed FASTQ)
+  --gsize 5249449 \                                                     # Estimated genome size in bp
+  --outdir ./results/illumina/klebs/shovill/SRR28370701 \              # Output directory for assembly results
+  --assembler skesa \                                                   # Assembler to use (SKESA)
+  --minlen 500 \                                                        # Minimum contig length to retain
+  --mincov 2 \                                                          # Minimum contig coverage to retain
+  --force \                                                             # Overwrite output directory if it exists
+  --keepfiles \                                                         # Keep intermediate files for inspection
+  --depth 0 \                                                           # Use all sequencing depth for assembly
+  --noreadcorr \                                                        # Disable read error correction
+  --namefmt "SRR28370701_%05d" \                                        # Naming format for contigs
+  --cpus 4 \                                                            # Number of CPU threads to use
+  --ram 16 \                                                            # Maximum RAM in GB to use
+  --tmpdir $TMPDIR                                                      # Temporary directory for intermediate files
 ```
 
 ### Rename Assembly Output
