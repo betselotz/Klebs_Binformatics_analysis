@@ -3,7 +3,7 @@
 
 ---  
 
-###### **Group_members **: [Betselot Zerihun Ayano ](https://github.com/betselotz), KICONCO BENADINE, Vera Morangi Onwonga, Kiconco Benadine, Nkiruka Lynda Uzoebo & Nambozo Eunice Jennifer
+###### **Group_members **: [Betselot Zerihun Ayano ](https://github.com/betselotz), Vera Morangi Onwonga, Kiconco Benadine, Nkiruka Lynda Uzoebo & Nambozo Eunice Jennifer
 
 ---
 ##  Introduction – *Klebsiella pneumoniae*
