@@ -3,7 +3,7 @@
 
 ---  
 
-###### **Group_members **: [Betselot Zerihun Ayano ](https://github.com/betselotz), Vera Morangi Onwonga, Kiconco Benadine, Nkiruka Lynda Uzoebo & Nambozo Eunice Jennifer
+###### **Group_members **: [Betselot Zerihun Ayano ](https://github.com/betselotz), Vera Morangi Onwonga (https://github.com/Vmorangi), Kiconco Benadine, Nkiruka Lynda Uzoebo & Nambozo Eunice Jennifer
 
 ---
 ##  Introduction – *Klebsiella pneumoniae*
@@ -327,7 +327,7 @@ rsync -avP --partial user3@hpc.ilri.cgiar.org:~/SRR28370682.fa \     # Source: H
 
 
 ``` bash
-export TMPDIR=./results/ont/klebsiella/tmp/prokka/
+export TMPDIR=./results/illumina/klebs/tmp/prokka/
 ```
 
 
