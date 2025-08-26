@@ -366,27 +366,26 @@ Data source: [Pathogenwatch Klebsiella genomes](https://pathogen.watch/genomes/a
 
 ```bash
 mkdir -p ./pathogenwatch/klebs/assemblies-to-test   # -p creates parent directories if they do not exist
+```
 
----
-
-### 1. Create a directory for global assemblies
+#### 1. Create a directory for global assemblies
 ```bash
 mkdir -p ./pathogenwatch/klebs/assemblies-to-test   # -p creates parent directories if they do not exist
 ```
 
-### 2.  Add our genome assembly to the directory
+#### 2.  Add our genome assembly to the directory
 ```bash
 rsync -avP --partial \
     ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \   # Source: our assembled genome
     ./pathogenwatch/klebs/assemblies-to-test/SRR28370701.fasta      # Destination in the assemblies folder
 ```
-### 3. Add reference genome assembly
+#### 3. Add reference genome assembly
 ```bash
 rsync -avP --partial \
     ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.fna \   # Source: reference genome
     ./pathogenwatch/klebs/assemblies-to-test/Reference.fasta   # Destination with clear name
 ```
-### 4. Add selected global assemblies to test
+#### 4. Add selected global assemblies to test
 ```bash
 rsync -avP --partial \
     ./genomes/klebs/*.fna \                                # Source: all additional genomes in your genomes/klebs folder
@@ -395,20 +394,20 @@ rsync -avP --partial \
 
 ##  Step 6: Pathogen Typing (MLST)
 
-## Introduction to Multi-Locus Sequence Typing (MLST)
+### Introduction to Multi-Locus Sequence Typing (MLST)
 
 **Multi-Locus Sequence Typing (MLST)** is a widely used method for **characterizing bacterial isolates at the strain level** based on the sequences of several (typically 5–7) conserved housekeeping genes. MLST provides a standardized, reproducible, and portable way to assign **sequence types (STs)** to bacterial strains, allowing comparisons across studies and global databases.
 
-### Key Features:
+#### Key Features:
 - **Purpose:** Identify clonal lineages, track outbreaks, and study population structure.
 - **Resolution:** Intermediate – higher than species-level typing, lower than whole-genome SNP analysis.
 - **Species:** MLST schemes are species-specific; for example, Klebsiella pneumoniae has its own curated MLST scheme in pubMLST.
 
-### Input:
+#### Input:
 - **Annotated genome sequences** (FASTA format) or assembled contigs.
 - Can also use raw reads, but most pipelines prefer **assembled genomes** to ensure accuracy.
 
-### Output:
+#### Output:
 - **Allelic profile table**: Lists the alleles present at each housekeeping gene locus.
 - **Sequence Type (ST)**: A unique identifier corresponding to the combination of alleles.
 - **Optional details**: BLAST scores, percent identity, coverage, and unassigned loci.
@@ -417,15 +416,13 @@ rsync -avP --partial \
 MLST is widely used in **epidemiology, surveillance, and population genomics**, providing a consistent method to **compare bacterial isolates worldwide**.
 
 
----
-
-### 1. Set the MLST database path
+#### 1. Set the MLST database path
 ```bash
 MLST_DB=$(find /export/apps/mlst/2.23.0/db -name "mlst.fa" | sed 's=blast/mlst.fa==')  # Locate the MLST database and remove the trailing path to point to the parent folder
 ```
 
-### 2. Run MLST typing
-
+#### 2. Run MLST typing
+```bash
 mlst \
     --threads 2 \                                       # Use 2 CPU threads to speed up analysis
     --blastdb $MLST_DB/blast/mlst.fa \                 # Specify the BLAST database for MLST
@@ -436,13 +433,11 @@ mlst \
     --minscore 50 \                                    # Minimum BLAST score to consider a hit
     ./results/illumina/klebs/prokka/SRR28370701.fna \  # Input genome (annotated nucleotide sequences from Prokka)
     > ./results/illumina/klebs/mlst/SRR28370701.tsv    # Save output as TSV for downstream analysis
-
 ```
 
-# Batch MLST Typing
+### Batch MLST Typing
 
 We can perform MLST on multiple assemblies in a single step using a loop. This is useful when comparing our isolate to additional genomes, such as those from Pathogenwatch.
-
 
 ```bash
 for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
@@ -462,16 +457,16 @@ for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
         $fn \                                       # Input genome assembly
         > ./results/illumina/klebs/mlst/${sample}.tsv  # Save results to a TSV file named after the sample
 done
-
-
 ```
 
-#### Merge MLST reports
+#### Merge MLST Reports
 
-``` bash
+After running MLST on multiple assemblies, we can combine all individual TSV files into a single consolidated file for easier comparison and downstream analysis.
+
+```bash
 cat \
-    ./results/illumina/klebs/mlst/*.tsv > \
-    ./results/illumina/klebs/mlst/klebs-mlst.txt
+    ./results/illumina/klebs/mlst/*.tsv > \          # Concatenate all TSV files in the mlst folder
+    ./results/illumina/klebs/mlst/klebs-mlst.txt     # Save the merged output as a single text file
 ```
 
 #### Assign sequence types using web resources
