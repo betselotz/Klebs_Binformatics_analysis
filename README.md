@@ -308,11 +308,10 @@ grep 'contig_percent_[cg]' \
 ### 💻 Transfer Assembly to Local Computer
 
 #### 1. Copy assembly to HPC home directory
-
 ```bash
 rsync -avP --partial \
-    ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \  
-    ~/                                                              
+    ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \
+    ~/
 ```
                              
 #### 2. Download assembly to local machine
