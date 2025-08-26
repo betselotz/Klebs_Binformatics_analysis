@@ -44,7 +44,6 @@ We all worked on
 interactive -w compute05 -c 2 -J amr-surveillance -p batch
 ```
 
-```
 ###  Setting Up the Project Directory Structure  
 
 Create a working directory on the HPC scratch space and move into it:  
