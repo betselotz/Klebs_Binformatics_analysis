@@ -453,11 +453,10 @@ for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
         > ./results/illumina/klebs/mlst/${sample}.tsv
 done
 ```
-```
-
 #### Merge MLST Reports
 
-After running MLST on multiple assemblies, we combined all individual TSV files into a single consolidated file for easier comparison and downstream analysis.
+After running MLST on multiple assemblies, we combine all individual TSV files into a single consolidated file.  
+This makes it easier to compare sequence types across samples and use the data for downstream analyses.
 
 ```bash
 cat \
@@ -507,25 +506,19 @@ kaptive assembly \
   -t 2 \
   -o ./results/illumina/klebs/kaptive/kaptive_o_locus.tsv
 ```
-
-
 ### Kaptive Web
-
 We uploaded our genome assemblies to [Kaptive-Web](https://kaptive-web.erc.monash.edu/) for **in silico serotyping of Klebsiella**.  
-
 **Purpose:**  
 - Identify **K (capsule) and O (LPS) antigen types** from assembled genomes.  
 - Provides confidence scores for each locus match and reports coverage and identity.  
 - Useful for **epidemiological tracking, virulence assessment, and comparative genomics**.  
-
 **Steps:**  
 1. Go to [Kaptive-Web](https://kaptive-web.erc.monash.edu/).  
 2. Upload one or multiple genome assemblies in FASTA format.  
 3. Select the relevant reference database (K or O locus).  
 4. Run the analysis and download the results in TSV or CSV format for downstream interpretation.
  
-
-## Step 7: AMR Genes Detection
+## AMR Genes Detection
 
 #### AMR genes detection using ResFinder
 
@@ -550,7 +543,7 @@ python -m resfinder \
     --point
 ```
 
-## Batch AMR Detection
+### Batch AMR Detection
 
 We can run **ResFinder** on multiple genome assemblies at once using a Bash loop. This allows us to detect antimicrobial resistance (AMR) genes and point mutations across all genomes in the dataset.  
 
@@ -576,22 +569,30 @@ for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
 done
 ```
 
-## AMR Detection using CARD and RGI web resources
+## AMR Detection using CARD and RGI Web Resources
+Before running AMR detection with **RGI (Resistance Gene Identifier)** and CARD databases, we prepare the environment by unloading conflicting modules and loading the correct version of AMRFinder.CARD (Comprehensive Antibiotic Resistance Database) is used with RGI for accurate AMR gene prediction.
 
-``` bash
+```bash
 module unload prokka/1.14.6
 module unload amrfinder/4.0.22
 module load amrfinder/4.0.22
 ```
 
-## AMR genes detection using AMRFinder
+## AMR Genes Detection using AMRFinder
 
-``` bash
+**AMRFinder** identifies antimicrobial resistance (AMR) genes in bacterial genome assemblies using both nucleotide and protein sequences.  
+- **Input:**  
+  - Nucleotide sequence (`.fna`)  
+  - Protein sequence (`.faa`)  
+  - Genome annotation (`.gff`)  
+
+- **Output:**  
+  - TSV file listing detected AMR genes, identity, coverage, and predicted resistance phenotype  
+
+```bash
 export TMPDIR=./results/illumina/klebs/tmp/amrfinder/
-
 ```
-
-``` bash
+```bash
 amrfinder \
     --nucleotide ./results/illumina/klebs/prokka/SRR28370701.fna \
     --protein   ./results/illumina/klebs/prokka/SRR28370701.faa \
@@ -608,33 +609,31 @@ amrfinder \
     > ./results/illumina/klebs/amrfinder/SRR28370701.tsv
 ```
 
-# Step 8: Variant Calling and Consensus Assemblies
-
-
-Prepare the working environment
-
-``` bash 
+### Variant Calling and Consensus Assemblies
+- Before performing variant calling and generating consensus assemblies, we prepare the working environment by loading the required tools.
+- module purge clears all previously loaded modules to avoid conflicts.
+- snippy is used for variant calling and creating consensus sequences from read alignments.
+- gubbins identifies recombination events in bacterial genomes for phylogenetic analysis.
+```bash
 module purge
 module load snippy/4.6.0
 module load gubbins/3.4
 ```
 
-
 #### Fast Bacterial Variant Calling with Contigs
 
-Define the temporary directory for `snippy` analysis.
+We perform contig-based variant calling using **Snippy**, which identifies single nucleotide variants (SNVs) against a reference genome.
 
-``` bash 
+Define a temporary directory for Snippy intermediate files
+```bash
 export TMPDIR=$(pwd)/results/illumina/klebs/tmp/snippy/
-
+Create the directory if it does not exist
+```bash
 mkdir -p ./results/illumina/klebs/tmp/snippy
 ```
-
-
 Contig-based variant calling with `snippy`:
-
-
-``` bash
+Contig-based variant calling with Snippy is a method where pre-assembled genome sequences (contigs) are compared against a reference genome to identify genetic variants such as single nucleotide polymorphisms (SNPs) or small insertions/deletions (indels).
+```bash
 for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
     sample=$(basename $fn)
     sample="${sample%.*}"
@@ -655,17 +654,13 @@ for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
         --ctgs $fn
     echo -e "\n-------------------------------\n"
 done
-
 ```
 
 ##### Visualising the Snippy Variants
 
-Copy the following files from the output directory to your `home` directory on
-`hpc`:
+Copy the reference genome and its index from the Snippy output to your home directory on HPC:
 
-- Reference genome file `ref.fa` and Reference genome index file `ref.fa.fai`
-
-``` bash
+```bash
 rsync \
     -avP \
     --partial \
@@ -673,46 +668,28 @@ rsync \
     ./results/illumina/klebs/snippy/SRR28370701/reference/ref.fa.fai \
     ~/
 ```
+Copy the BAM file and its index for the aligned reads:
 
-- BAM file `SRR28370682.bam` and Indexed BAM file `SRR28370682.bam.bai`
-
-```
+```bash
 rsync \
     -avP \
     --partial \
     ./results/illumina/klebs/snippy/SRR28370701/SRR28370701.bam* \
-    ~/
+    ~/    # Copies BAM and BAM index files to home directory
 ```
 
-
-> Note. On a new terminal session outside the `hpc`. Replace **<user_name>** with your
-> `user` name
-
-Copy the files from your `home` directory on `hpc` to your `home` directory on
-`local` machine:
-
-```
-rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/ref.fa* ~/
-```
-
-```
-rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/SRR28370682.bam* ~/
-```
+Visualisation of Snippy Variants using IGV
+1. Open [IGV](https://igv.org/app/) in your browser or desktop application.
+2. Load the genome file `ref.fa` in the **Genome** tab.
+3. Load the alignment BAM file and its index in the **Tracks** tab.
+4. Select chromosome `NC_009648` and define the region of interest, e.g., `NC_009648:1-200`, to explore variants visually.
 
 
-1. Go to https://igv.org/app/
-2. Load the Genome `ref.fa` in the `Genome` tab
-3. Load the alignment and its index in the `Tracks` tab
-4. For the `ref.fa` select `NC_009648` as chromosome and type `NC_009648:1-200`
-   as the region of interest
-
-
-
-##### Build Core and Whole Genome Aligments from Snippy Output
+##### Build Core and Whole Genome Alignments from Snippy Output
 
 #### Snippy Core Alignments
 
-``` bash 
+```bash
 snippy-core \
     --maxhap 100 \
     --mask-char N \
@@ -720,57 +697,47 @@ snippy-core \
     --prefix ./results/illumina/klebs/snippy-core/core-snp \
     ./results/illumina/klebs/snippy/*
 ```
-
-#### Cleanup the Snippy SNP Alignment
-
-``` bash 
+Cleanup the Snippy SNP Alignment
+```bash
 snippy-clean_full_aln \
     /results/illumina/klebs/snippy-core/core-snp.full.aln > \
     ./results/illumina/klebs/snippy-core/core-snp-clean.full.aln
 ```
+## Phylogenetic Analysis
 
-# Step 9: Phylogenetic analysis
+## Detect Recombination and Mask Recombinant Regions
+Purpose: Recombination in bacterial genomes can introduce horizontally transferred DNA, which can bias phylogenetic inference. Gubbins identifies these recombinant regions and allows you to mask them before building phylogenetic trees, ensuring more accurate evolutionary analyses.
 
-## Detect Recombination and mask recombinant regions
+#### 1. Download the `run_gubbins.sh` script to a scripts directory in your home directory:
 
-We will submit the job using the job scheduler SLURM. 
-
-1. Download the `run_gubbins.sh` to a scripts directory in your home directory
-
-``` bash 
+```bash
 mkdir -p ~/scripts
 wget -c -N https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/run_gubbins.sh \
--P ~/scripts/
+    -P ~/scripts/
 ```
-
-2. Edit the downloaded script
-
->Note Ensure that you edit the partition option `-w` in the script accordingly to
->correspond to the compute node that you were assigned.
-
-
-3. Submit it as a job
-
-``` bash 
+#### 2. Edit the Downloaded Script
+> Note: Ensure that you edit the partition option `-w` in the script to correspond to the compute node that you were assigned.
+#### 3. Submit the script to SLURM:
+sbatch submits the Gubbins job to the SLURM scheduler. It runs in the background on the HPC cluster without tying up your interactive session.
+```bash
 sbatch ~/scripts/run_gubbins.sh
 ```
+#### 4.Interactive run (for reference):
+Interactively, the Gubbins job would be run as follows:
 
->**Note: DO NOT RUN THE SCRIPT INTERACTIVELY**
-
-Interactively, we'd have run the job as follows:
-
-``` bash 
+```bash
 run_gubbins.py \
     --threads 2 \
-    --prefix ./results/ont/klebsiella/gubbins/core-snp \
+    --prefix ./results/illumina/klebs/gubbins/core-snp \
     --iterations 5 \
     --min-snps 3 \
     --min-window-size 100 \
     --max-window-size 10000 \
     --filter-percentage 25.0 \
-    ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln
+    ./results/illumina/klebs/snippy-core/core-snp-clean.full.aln
 ```
-
+#### Detecting and masking recombinant regions in bacterial genomes using Gubbins.
+This code uses mask_gubbins_aln.py to take a multiple sequence alignment (MSA) of core SNPs and a GFF file containing recombinant regions predicted by Gubbins, and it produces a new alignment where all recombinant regions are masked with the character N.
 
 ``` bash 
 mask_gubbins_aln.py \
@@ -780,185 +747,49 @@ mask_gubbins_aln.py \
     --out ./results/ont/klebsiella/gubbins/core-snp.masked.aln
 ```
 
+#### Preparing Metadata for Gubbins Visualization
+The purpose of this command is to **prepare a metadata file for visualizing Gubbins results**. Specifically:
+- **Extract sample IDs and sequence types (STs)** from the MLST results.
+- **Clean up the sample IDs** by removing `.fasta` extensions and any leading directory paths.
+- **Format the output as a CSV file** with a header `id,ST`, which can then be used to annotate phylogenetic trees or Gubbins plots.
+In short, this file allows you to **add meaningful labels, metadata, or clade information** to your Gubbins-generated trees, making them ready for publication or presentation.
 
-
-To produce publication-ready figures of Gubbins analyses and annotate with
-metadata, clades or any other information of the samples.
-
-```
-awk -F"\t" 'BEGIN{printf "id,ST\n"} {printf "%s,%s\n", $1,"ST"$3}' ./results/ont/klebsiella/mlst/klebs-mlst.txt | sed s'/.fasta//g' | sed s'/.*\///g' > ./results/ont/klebsiella/gubbins/core-snp-metadata.csv
+``` bash 
+awk -F"\t" 'BEGIN{printf "id,ST\n"} {printf "%s,%s\n", $1,"ST"$3}' ./results/illumina/klebs/mlst/klebs-mlst.txt \
+| sed s'/.fasta//g' \
+| sed s'/.*\///g' \
+> ./results/illumina/klebs/gubbins/core-snp-metadata.csv
 ```
 
 ```
 Rscript ./scripts/plot_gubbins.R \
-  -t ./results/ont/klebsiella/gubbins/core-snp.final_tree.tre \
-  -r  ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \
-  --meta ./results/ont/klebsiella/gubbins/core-snp-metadata.csv \
+  -t ./results/illumina/klebs/gubbins/core-snp.final_tree.tre \
+  -r  ./results/illumina/klebs/gubbins/core-snp.recombination_predictions.gff \
+  --meta ./results/illumina/klebs/gubbins/core-snp-metadata.csv \
   --legend-height 0.35  \
   --tree-axis-expansion 30 \
   --heatmap-x-nudge 0.05 \
   --heatmap-y-nudge -0.05 \
-  -o ./results/ont/klebsiella/gubbins/core-snp-plots.png
+  -o ./results/illumina/klebs/gubbins/core-snp-plots.png
 ```
+### Maximum Likelihood Phylogenetic Inference
+- IQ-TREE performs fast and accurate maximum likelihood phylogenetic inference, supporting ultrafast bootstrap and SH-aLRT tests for branch support.
+- It works efficiently with large or partitioned alignments and outputs publication-ready trees and statistics.
 
-
-## Maximum likelihood phylogenetic inference
-
-```
+Load the IQ-TREE module:
+```bash
 module purge
 module load iqtree/1.6.12
 ```
-
-```
+Run IQ-TREE to infer a maximum likelihood phylogeny:
+```bash
 iqtree \
     -m HKY \
     -bb 1000 \
     -alrt 1000 \
     -alninfo \
-    -s ./results/ont/klebsiella/gubbins/core-snp.masked.aln \
+    -s ./results/illumina/klebs/gubbins/core-snp.masked.aln \
     -nt 2 \
     -redo \
-    -pre ./results/ont/klebsiella/iqtree/core-snp
-```
-
-> **Note:** It is important to use phylogenetic algorithms that take into
-> account SNP alignments. These algorithms usually include some form of
-> ascertainment bias correction that corrects for the 'missing' nucleotides in
-> the alignment that were masked/removed because they did not show polymorphism.
-
-
-# Step 10: Visualization
-
-## Visualize the phylogeny alongside typing, antibiotic resistance or epidemiological data
-
-
-We will explore [**Microreact**](https://microreact.org/) to visualize genomic
-data alongside AMR, typing (MLST, serotyping) and epidemiological data.
-
-
-Microreact is software developed by the Centre for Genomic Pathogen Surveillance
-(CGPS) that allows you to upload, visualise and explore any combination of
-**clustering (trees)**, **geographic (map)** and **temporal (timeline)** data.
-Other metadata variables are displayed in a table. You can specify colours
-and/or shapes to display on the map, tree and/or timeline. A permanent URL is
-produced for you to share your Microreact, or a .microreact file can be
-downloaded for sharing with collaborators.
-
-
-[**Microreact**](https://microreact.org/) is a web-based application for the
-provision of interactive data visualisations. It enables the rapid generation
-and linkage of trees, maps, networks, charts and timelines, enabling
-epidemiologists and key decision makers to react faster and with greater
-accuracy.
-
-
-1. Microreact is freely available (at http://microreact.org).
-2. Microreact – Hierarchical and Geographical Analysis Tool.
-3. Microreact allows you to upload, visualize and explore dendrograms (trees)
-   linked to adata containing geographical locations.
-
-
-1. Download the data to your local computer through either the command line or
-   the **Download button**
-
-    ```
-    wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/microreact/data.csv
-    ```
-
-    ```
-    wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/microreact/tree.nwk
-    ```
-
-2. On your preferred web browser (Firefox, Google Chrome, Safari, Microsoft
-   Edge), open a new window and type http://microreact.org on the address bar.
-
-3. Login here: https://microreact.org/api/auth/signin?callbackUrl=/my-account
-
-
-
-## Visualization using other tools
-We can also use open-source tools to visualize the complex genomic data
-integrated with other data types - AMR profiles, Serotying and MLST information.
-
-1. Login to the Rstudio server https://hpc.ilri.cgiar.org/rstudio/
-2. Start a new `Terminal` session on the `Terminal Tab`
-3. Download the `tree.nwk` file into `home` directory
-
-    ```
-    wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/microreact/tree.nwk -P ~/
-    ```
-4. Download the `data.csv` file into `home` directory
-
-    ```
-    wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/microreact/data.csv -P ~/
-    ```
-5. Download the `plot_tree.R` script into home directory
-
-    ```
-    wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/plot_tree.R -P ~/
-    ```
-6. Navigate to the `Output` pane/panel (Output pane, containing the Files,
-   Plots, Packages, Help, Viewer, and Presentation tabs) on Rstudio and click on
-   the `Refresh icon`
-
-7. Click on the `plot_tree.R` script to open it on the `Source` pane/panel.
-
-
-# Assignment
-
-## 1. Visualize the generated phylogenetic tree of the 11 samples alongside the
-   metadata in Microreact. 
-
-   - Create a new project and name it accordingly.
-   - Create a metadata with the relevant information. You can be guided on how
-     to prepare your metadata using the guidelines outlined here:
-     https://docs.microreact.org/instructions/creating-a-microreact-project/metadata-column-types
-     
-
-
-## 2. Visualize the data using R
-
-We will copy the `mlst`, `core-snp.treefile` and `resfinder` results from the 
-compute nodes (`compute05` or `compute06`) to the head node (`hpc`) to our
-`home` directory interactively as follows:
-
-```
-rsync -avP --partial \
-    /var/scratch/$USER/ACDC_AMR2025/results/ont/klebsiella/mlst ~/
-```
-
-```
-rsync -avP --partial /var/scratch/$USER/ACDC_AMR2025/results/ont/klebsiella/resfinder --exclude="*_blast*" ~/
-```
-
-
-```
-rsync -avP --partial \
-    /var/scratch/$USER/ACDC_AMR2025/results/ont/klebsiella/iqtree ~/
-```
-
-
-
-Symbolically link the script to the `scripts` directory in the `home` directory
-
-
-```
-ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/scripts/visualizeAMR* ~/scripts/
-```
-
-
->**Note: Run the script interactively on the `rstudio` server `Terminal`** 
-
-```
-module load R/4.4
-```
-
-```
-Rscript ~/scripts/visualizeAMR.R \
-    --tree ~/iqtree/core-snp.treefile \
-    --mlst ~/mlst/*.tsv \
-    --pointfinder ~/resfinder/*/PointFinder_results.txt \
-    --resfinder ~/resfinder/*/ResFinder_results_tab.txt \
-    --prefix phylogeny-amr \
-    --outdir ~/plots
+    -pre ./results/illumina/klebs/iqtree/core-snp
 ```
