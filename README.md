@@ -281,41 +281,42 @@ seqkit fx2tab -nl ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa
 We can use another tool assembly-scan to generate summary statistics of the assembly.
 
 #### 3. Assembly summary with assembly-scan
-
-
+# List available modules
 ``` bash
-module avail seqkit
+module avail assembly-scan
 ```
+# Load assembly-scan
 ``` bash
 module load assembly-scan/1.0.0
 ```
+# Generate summary statistics
 ``` bash
-assembly-scan /var/scratch/user3/illumina_downloads/results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \
+assembly-scan ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \
   --transpose \
-  | tee /var/scratch/user3/illumina_downloads/results/illumina/klebs/shovill/SRR28370701/SRR28370701-assembly-scan.tsv
+  | tee ./results/illumina/klebs/shovill/SRR28370701/SRR28370701-assembly-scan.tsv
 ```
-3. Assembly summary with assembly-scan
-
-
-Compute the GC content of the assembly using the output from assembly-scan output
+#### 4. Compute GC content from assembly-scan output
 ``` bash
-grep \
- 'contig_percent_[cg]' \
- ./results/illumina/klebs/shovill/SRR28370701/SRR28370701-assembly-scan.tsv | \
- awk -F '\t' '{sum+=$3} END {print "GC%=",sum}'
- awk -F '\t' '{sum+=$3} END {print "GC%=",sum}'
+grep 'contig_percent_[cg]' \
+  ./results/illumina/klebs/shovill/SRR28370701/SRR28370701-assembly-scan.tsv \
+  | awk -F '\t' '{sum+=$3} END {print "GC%=",sum}'
 ```
-Transfer assembly to local computer
 
-Copy the assembly to your home directory on hpc
-``` bash
-rsync -avP \
-    --partial \
-    ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \
+
+### 💻 Transfer Assembly to Local Computer
+
+#### 1. Copy assembly to HPC home directory
+
+```bash
+rsync -avP \                               # rsync: transfer files securely with archive mode, verbose output, and progress
+    --partial \                            # Keep partially transferred files if interrupted
+    ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \  # Source file: the assembly on HPC
     ~/
-```
-``` bash
-rsync -avP --partial user3@hpc.ilri.cgiar.org:~/SRR28370682.fa ~/AMR_training/group1/
+```                                  # Destination: home directory on the HPC
+#### 2. Download assembly to local machine
+```bash
+rsync -avP --partial user3@hpc.ilri.cgiar.org:~/SRR28370682.fa \  # Source: HPC home directory file, replace 'user3' with your HPC username
+    ~/AMR_training/group1/                                         # Destination: local directory on your computer
 ```
 
 
