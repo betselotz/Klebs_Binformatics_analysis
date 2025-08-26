@@ -283,15 +283,15 @@ seqkit fx2tab -nl ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa
 We can use another tool assembly-scan to generate summary statistics of the assembly.
 
 #### 3. Assembly summary with assembly-scan
-# List available modules
+######  List available modules
 ``` bash
 module avail assembly-scan
 ```
-# Load assembly-scan
+######  Load assembly-scan
 ``` bash
 module load assembly-scan/1.0.0
 ```
-# Generate summary statistics
+######  Generate summary statistics
 ``` bash
 assembly-scan ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \
   --transpose \
