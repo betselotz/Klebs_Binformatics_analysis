@@ -45,7 +45,7 @@ interactive -w compute05 -c 2 -J amr-surveillance -p batch
 ```
 
 ```
-### 📂 Setting Up the Project Directory Structure  
+###  Setting Up the Project Directory Structure  
 
 Create a working directory on the HPC scratch space and move into it:  
 
@@ -58,7 +58,7 @@ We changed directory into
 cd /var/scratch/$USER/illumina_downloads
 ```
 
-### 📂 Create a Structured Project Directory  
+### Create a Structured Project Directory  
 
 Within our project directory, we can create well-organized subfolders for the *Klebsiella* analysis:  
 
