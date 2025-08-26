@@ -253,11 +253,9 @@ mv ./results/illumina/klebs/shovill/SRR28370701/contigs.fa \
    ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa
 ```
 
-### 🧪 Assembly Evaluation
+###  Assembly Evaluation
 
 Before downstream analyses, it is important to verify the quality of the assembled genome.
-
----
 
 #### 1. Quick assembly stats using `stats.sh`
 
@@ -266,19 +264,19 @@ stats.sh in=./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa
 ```
 
 #### 2. Using seqkit to explore assembly
-# List available seqkit modules
+##### List available seqkit modules
 ``` bash
 module avail seqkit
 ```
-# Load seqkit
+###### Load seqkit
 ``` bash
 module load seqkit/0.11.0 
 ```
-# Display help
+###### Display help
 ``` bash
 seqkit -h
 ```
-# Convert FASTA to tab-delimited table (sequence length and name)
+###### Convert FASTA to tab-delimited table (sequence length and name)
 ``` bash
 seqkit fx2tab -nl ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa
 ```
