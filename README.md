@@ -321,10 +321,9 @@ grep 'contig_percent_[cg]' \
 rsync -avP --partial \
     ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \
     ~/
-```
-```bash                             
+```                       
 #### 2. Download assembly to local machine
-
+```bash  
 rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370682.fa \
     ~/AMR_training/group1/
 ```
@@ -358,7 +357,6 @@ prokka \
 
 To better understand the genomic diversity and epidemiology of Klebsiella in Kenya, we will include **11 additional Klebsiella isolates** collected between January 14 and January 31, 2019.  
 This allows us to:  
-
 - Compare our locally sequenced isolate (`SRR28370701`) to other regional isolates.  
 - Place our genome in a broader **phylogenetic and genomic context**.  
 - Evaluate the presence and spread of antimicrobial resistance genes across multiple isolates.  
@@ -512,16 +510,32 @@ kaptive assembly \
 
 
 ### Kaptive Web
-we uploaded our assemblies to [Kaptive-Web](https://kaptive-web.erc.monash.edu/). 
 
-# Step 7: AMR genes detection
+We uploaded our genome assemblies to [Kaptive-Web](https://kaptive-web.erc.monash.edu/) for **in silico serotyping of Klebsiella**.  
 
+**Purpose:**  
+- Identify **K (capsule) and O (LPS) antigen types** from assembled genomes.  
+- Provides confidence scores for each locus match and reports coverage and identity.  
+- Useful for **epidemiological tracking, virulence assessment, and comparative genomics**.  
 
-## AMR genes detection using ResFinder
+**Steps:**  
+1. Go to [Kaptive-Web](https://kaptive-web.erc.monash.edu/).  
+2. Upload one or multiple genome assemblies in FASTA format.  
+3. Select the relevant reference database (K or O locus).  
+4. Run the analysis and download the results in TSV or CSV format for downstream interpretation.
+ 
 
-[**ResFinder**](https://genepi.dk/resfinder) identifies acquired genes and/or finds chromosomal mutations mediating antimicrobial resistance in total or partial DNA sequence of bacteria.
+## Step 7: AMR Genes Detection
 
-``` bash 
+#### AMR genes detection using ResFinder
+
+[**ResFinder**](https://genepi.dk/resfinder) identifies acquired antimicrobial resistance (AMR) genes and chromosomal mutations from bacterial genome sequences. - The tool helps in tracking resistance determinants and understanding the AMR profile of the isolate.
+- Both acquired genes and chromosomal point mutations are detected.
+
+- **Input:** Genome assembly in FASTA format.  
+- **Output:** TSV/CSV files listing detected AMR genes, identity, coverage, and predicted resistance phenotype.  
+
+```bash
 python -m resfinder \
     -ifa ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \
     -o ./results/illumina/klebs/resfinder/SRR28370701 \
@@ -534,12 +548,13 @@ python -m resfinder \
     --ignore_indels \
     --acquired \
     --point
-
 ```
 
-## Batch AMR detection 
+## Batch AMR Detection
 
-``` bash 
+We can run **ResFinder** on multiple genome assemblies at once using a Bash loop. This allows us to detect antimicrobial resistance (AMR) genes and point mutations across all genomes in the dataset.  
+
+```bash
 for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
     sample=$(basename $fn)
     sample="${sample%.*}"
