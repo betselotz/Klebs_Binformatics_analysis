@@ -323,7 +323,7 @@ rsync -avP --partial user3@hpc.ilri.cgiar.org:~/SRR28370682.fa \     # Source: H
     ~/AMR_training/group1/                                           # Destination: local directory on your computer
 ```
 
-# Step 5: Genome Annotation with Prokka
+## Step 5: Genome Annotation with Prokka
 
 **Prokka** is a widely used tool for rapid **annotation of bacterial genomes**. It predicts coding sequences (CDS), rRNAs, tRNAs, and other features, and generates standardized output files like GFF, GBK, FAA, and FNA. Using Prokka ensures annotations are reproducible and compatible with downstream bioinformatics tools.
 
@@ -393,47 +393,76 @@ rsync -avP --partial \
     ./pathogenwatch/klebs/assemblies-to-test/             # Destination folder for Pathogenwatch analysis
 ```
 
-# Step 6: Pathogen Typing
+##  Step 6: Pathogen Typing (MLST)
 
-``` bash
-MLST_DB=$(find /export/apps/mlst/2.23.0/db -name "mlst.fa" | sed 's=blast/mlst.fa==')
+## Introduction to Multi-Locus Sequence Typing (MLST)
+
+**Multi-Locus Sequence Typing (MLST)** is a widely used method for **characterizing bacterial isolates at the strain level** based on the sequences of several (typically 5–7) conserved housekeeping genes. MLST provides a standardized, reproducible, and portable way to assign **sequence types (STs)** to bacterial strains, allowing comparisons across studies and global databases.
+
+### Key Features:
+- **Purpose:** Identify clonal lineages, track outbreaks, and study population structure.
+- **Resolution:** Intermediate – higher than species-level typing, lower than whole-genome SNP analysis.
+- **Species:** MLST schemes are species-specific; for example, Klebsiella pneumoniae has its own curated MLST scheme in pubMLST.
+
+### Input:
+- **Annotated genome sequences** (FASTA format) or assembled contigs.
+- Can also use raw reads, but most pipelines prefer **assembled genomes** to ensure accuracy.
+
+### Output:
+- **Allelic profile table**: Lists the alleles present at each housekeeping gene locus.
+- **Sequence Type (ST)**: A unique identifier corresponding to the combination of alleles.
+- **Optional details**: BLAST scores, percent identity, coverage, and unassigned loci.
+- **Format**: TSV, CSV, or plain text files suitable for downstream analysis or integration into global MLST databases.
+
+MLST is widely used in **epidemiology, surveillance, and population genomics**, providing a consistent method to **compare bacterial isolates worldwide**.
+
+
+---
+
+### 1. Set the MLST database path
+```bash
+MLST_DB=$(find /export/apps/mlst/2.23.0/db -name "mlst.fa" | sed 's=blast/mlst.fa==')  # Locate the MLST database and remove the trailing path to point to the parent folder
 ```
 
-``` bash
+### 2. Run MLST typing
+
 mlst \
-    --threads 2 \
-    --blastdb $MLST_DB/blast/mlst.fa \
-    --datadir $MLST_DB/pubmlst \
-    --scheme klebsiella \
-    --minid 100 \
-    --mincov 10 \
-    --minscore 50 \
-    ./results/illumina/klebs/prokka/SRR28370701.fna \
-    > ./results/illumina/klebs/mlst/SRR28370701.tsv
+    --threads 2 \                                       # Use 2 CPU threads to speed up analysis
+    --blastdb $MLST_DB/blast/mlst.fa \                 # Specify the BLAST database for MLST
+    --datadir $MLST_DB/pubmlst \                       # Directory containing the MLST scheme definitions
+    --scheme klebsiella \                               # Specify the species-specific MLST scheme
+    --minid 100 \                                      # Minimum percent identity for allele matches
+    --mincov 10 \                                      # Minimum coverage of allele sequence
+    --minscore 50 \                                    # Minimum BLAST score to consider a hit
+    ./results/illumina/klebs/prokka/SRR28370701.fna \  # Input genome (annotated nucleotide sequences from Prokka)
+    > ./results/illumina/klebs/mlst/SRR28370701.tsv    # Save output as TSV for downstream analysis
 
 ```
 
+# Batch MLST Typing
 
-**Batch MLST**
+We can perform MLST on multiple assemblies in a single step using a loop. This is useful when comparing our isolate to additional genomes, such as those from Pathogenwatch.
 
-``` bash
+
+```bash
 for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
-    sample=$(basename $fn)
-    sample="${sample%.*}"
+    sample=$(basename $fn)                          # Extract the filename from the full path
+    sample="${sample%.*}"                            # Remove the file extension to get the sample name
     echo -e "-------------------------------\n"
-    echo -e "running mlst on: $sample - $fn"
+    echo -e "running mlst on: $sample - $fn"        # Print the sample being processed
 
     mlst \
-        --threads 2 \
-        --blastdb $MLST_DB/blast/mlst.fa \
-        --datadir $MLST_DB/pubmlst \
-        --scheme klebsiella \
-        --minid 100 \
-        --mincov 10 \
-        --minscore 50 \
-        $fn \
-        > ./results/illumina/klebs/mlst/${sample}.tsv
+        --threads 2                                 # Use 2 CPU threads for faster analysis
+        --blastdb $MLST_DB/blast/mlst.fa \         # Specify the MLST BLAST database
+        --datadir $MLST_DB/pubmlst \               # Path to pubMLST scheme data
+        --scheme klebsiella \                       # Use the Klebsiella-specific MLST scheme
+        --minid 100 \                               # Minimum percent identity for allele matches
+        --mincov 10 \                               # Minimum coverage of the allele sequence
+        --minscore 50 \                             # Minimum BLAST score to consider a hit
+        $fn \                                       # Input genome assembly
+        > ./results/illumina/klebs/mlst/${sample}.tsv  # Save results to a TSV file named after the sample
 done
+
 
 ```
 
