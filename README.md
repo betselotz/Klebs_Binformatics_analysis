@@ -37,6 +37,26 @@ First, log in to the High-Performance Computing (HPC) cluster using your assigne
 ```bash
 ssh <user_name>@hpc.ilri.cgiar.org
 ```
+We all worked on 
+
+>Compute05  
+``` bash
+interactive -w compute05 -c 2 -J amr-surveillance -p batch
+```
+
+###  Setting Up the Project Directory Structure  
+
+Create a working directory on the HPC scratch space and move into it:  
+
+```bash
+mkdir -p /var/scratch/$USER/illumina_downloads
+```
+We changed directory into 
+
+```bash
+cd /var/scratch/$USER/illumina_downloads
+```
+
 
 ##  Bioinformatics Analysis  
 Group leader created a `data` directory inside `illumina_downloads` to download our raw sequencing data:  
@@ -97,25 +117,6 @@ done
 ```
 
 
-We all worked on 
-
->Compute05  
-``` bash
-interactive -w compute05 -c 2 -J amr-surveillance -p batch
-```
-
-###  Setting Up the Project Directory Structure  
-
-Create a working directory on the HPC scratch space and move into it:  
-
-```bash
-mkdir -p /var/scratch/$USER/illumina_downloads
-```
-We changed directory into 
-
-```bash
-cd /var/scratch/$USER/illumina_downloads
-```
 
 ### Create a Structured Project Directory  
 
