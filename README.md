@@ -73,7 +73,7 @@ We created symbolic links to the relevant data folders in our current working di
 ln -sf /var/scratch/user3/illumina_downloads/[dps]* .
 ```
 
-### 🧰 Load Required Modules  
+###  Load Required Modules  
 
 Before running the analyses, load the necessary bioinformatics tools on the HPC:  
 
@@ -146,8 +146,9 @@ for f in *.fastq.gz; do
 done
 ```
 
-### Assessing Read Quality using fastqc before quality trimming  
+### Assessing Read Quality using FastQC (before quality trimming)
 
+We used **FastQC** to check the quality of raw sequencing reads before trimming.  
 
 ```bash
 fastqc \
@@ -158,45 +159,47 @@ fastqc \
     ./data/klebs/SRR28370701_1.fastq.gz \
     ./data/klebs/SRR28370701_2.fastq.gz
 ```
-Takes less than 1 minute
 
- - Now download the results of the fastqc command to your local laptop for evaluation. The results are in a `HTML` file.  
- - First copy to `~/`(home).
+## Download and Explore FastQC Results
+
+After running `FastQC`, you can download the resulting HTML reports to your local machine for evaluation.  
+
+1. **Copy the HTML results to your home directory on the cluster**  
 
 ```bash
 cp ./results/illumina/klebs/fastqc/*html ~/
 ```
- - To copy the report to a directory on **`local pc`**
+2. **Transfer the Report to Your Local Computer**  
+
+We use `rsync` to securely copy the file:  
 
 ```bash
 rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370701*.html ~/
 ```
- - Opened the HTML file and explore.
 
+### Quality Trimming FASTQ Files with fastp (Adapter and Quality Trimming)
 
-### Quality Trimming fastq files with fastp and Trims adapter sequences
-
+We used **fastp** to trim adapters, filter low-quality bases, and clean up paired-end reads before assembly.  
 
 ```bash
 fastp \
-    --in1 ./data/klebs/SRR28370701_1.fastq.gz \
-    --in2 ./data/klebs/SRR28370701_2.fastq.gz \
-    --out1 ./results/illumina/klebs/fastp/SRR28370701_trim_R1.fastq.gz \
-    --out2 ./results/illumina/klebs/fastp/SRR28370701_trim_R2.fastq.gz \
-    --detect_adapter_for_pe \
-    --thread 2 \
-    --json ./results/illumina/klebs/fastp/SRR28370701.fastp.json \
-    --html ./results/illumina/klebs/fastp/SRR28370701.fastp.html \
-    --cut_mean_quality 20 \
-    --cut_front \
-    --cut_tail \
-    --cut_window_size 4 \
-    --qualified_quality_phred 25 \
-    --unqualified_percent_limit 40 \
-    --length_required 20 \
-    2>&1 | tee ./results/illumina/klebs/fastp/SRR28370701.fastp.log
+    --in1 ./data/klebs/SRR28370701_1.fastq.gz \        # Input file: forward reads
+    --in2 ./data/klebs/SRR28370701_2.fastq.gz \        # Input file: reverse reads
+    --out1 ./results/illumina/klebs/fastp/SRR28370701_trim_R1.fastq.gz \  # Output: trimmed forward reads
+    --out2 ./results/illumina/klebs/fastp/SRR28370701_trim_R2.fastq.gz \  # Output: trimmed reverse reads
+    --detect_adapter_for_pe \                          # Auto-detect and trim adapter sequences
+    --thread 2 \                                       # Use 2 CPU threads
+    --json ./results/illumina/klebs/fastp/SRR28370701.fastp.json \   # JSON report with full stats
+    --html ./results/illumina/klebs/fastp/SRR28370701.fastp.html \   # Interactive HTML report
+    --cut_mean_quality 20 \                            # Sliding window trimming, average Q ≥ 20
+    --cut_front \                                      # Trim low-quality bases from the 5' end
+    --cut_tail \                                       # Trim low-quality bases from the 3' end
+    --cut_window_size 4 \                              # Window size of 4 bases for quality trimming
+    --qualified_quality_phred 25 \                     # Bases with Q ≥ 25 are considered "qualified"
+    --unqualified_percent_limit 40 \                   # Discard read if >40% bases are low quality
+    --length_required 20 \                             # Discard reads shorter than 20 bp
+    2>&1 | tee ./results/illumina/klebs/fastp/SRR28370701.fastp.log   # Save log file while printing to screen
 ```
-
 
  - `fastp` also generates a report in `HTML` format. Let us download it and explore. First copy it to home (`~/`)
 
@@ -209,65 +212,76 @@ cp ./results/illumina/klebs/fastp/SRR28370701.fastp.html ~/
 rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370701.fastp.html ~/
 ```
  - Examine the report.
- - Links available online: [SRR25008769.fastp.html](https://hpc.ilri.cgiar.org/~gkibet/AMR-Genomic-Surveillance/SRR25008769.fastp.html)
+ 
+###  De novo Genome Assembly:Shovill
 
-### De novo assembly pipeline for Illumina paired reads
+**Shovill** is a pipeline for **fast de novo assembly of bacterial genomes** from Illumina paired-end reads.
+```bash
+# Set temporary directory for Shovill intermediate files
+export TMPDIR="./results/illumina/klebs/tmp/shovill"
 
-
-```
-export TMPDIR="./results/illumina/ecoli/tmp/shovill"
-```
-
-```
+# Run Shovill assembly
 shovill \
-  --R1 ./results/illumina/klebs/fastp/SRR28370701_trim_R1.fastq.gz \
-  --R1 ./results/illumina/klebs/fastp/SRR28370701_trim_R2.fastq.gz \
-  --gsize 5249449 \
-  --outdir ./results/illumina/klebs/shovill/SRR28370701 \
-  --assembler skesa \
-  --minlen 500 \
-  --mincov 2 \
-  --force \
-  --keepfiles \
-  --depth 0 \
-  --noreadcorr \
-  --namefmt "SRR28370701_%05d" \
-  --cpus 4 \
-  --ram 16 \
-  --tmpdir $TMPDIR
+  --R1 ./results/illumina/klebs/fastp/SRR28370701_trim_R1.fastq.gz \   # Forward reads
+  --R2 ./results/illumina/klebs/fastp/SRR28370701_trim_R2.fastq.gz \   # Reverse reads
+  --gsize 5249449 \                                                    # Approximate genome size (bp)
+  --outdir ./results/illumina/klebs/shovill/SRR28370701 \              # Output directory
+  --assembler skesa \                                                  # Assembler to use
+  --minlen 500 \                                                       # Minimum contig length
+  --mincov 2 \                                                         # Minimum contig coverage
+  --force \                                                            # Overwrite output if exists
+  --keepfiles \                                                        # Keep intermediate files
+  --depth 0 \                                                          # Use all reads
+  --noreadcorr \                                                       # Skip read correction
+  --namefmt "SRR28370701_%05d" \                                       # Contig naming format
+  --cpus 4 \                                                           # Number of CPU threads
+  --ram 16 \                                                           # Maximum RAM (GB)
+  --tmpdir $TMPDIR                                                     # Temporary folder
 ```
 
+### Rename Assembly Output
+
+After running Shovill, the main contigs file is named `contigs.fa` by default.  
+We rename it to include the **sample accession** for clarity:
+
+```bash
+mv ./results/illumina/klebs/shovill/SRR28370701/contigs.fa \
+   ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa
 ```
-mv ./results/illumina/klebs/shovill/SRR28370701/contigs.fa ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa
-```
 
-### Assembly evaluation
-Assembly evaluation
+### 🧪 Assembly Evaluation
 
-We need to verify the quality of the resulting assembly before any downstream processes. We will use the utility script below:
+Before downstream analyses, it is important to verify the quality of the assembled genome.
 
-``` bash
+---
+
+#### 1. Quick assembly stats using `stats.sh`
+
+```bash
 stats.sh in=./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa
 ```
->**Note**
-Unfortunately, the N50 and L50 values generated by stats.sh are switched. N50
-should be a length and L50 should be a count. The results table below shows the
-corrected values based on stats.sh outputs.
 
-
+#### 2. Using seqkit to explore assembly
+# List available seqkit modules
 ``` bash
 module avail seqkit
 ```
+# Load seqkit
 ``` bash
 module load seqkit/0.11.0 
 ```
+# Display help
 ``` bash
 seqkit -h
 ```
+# Convert FASTA to tab-delimited table (sequence length and name)
 ``` bash
 seqkit fx2tab -nl ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa
 ```
 We can use another tool assembly-scan to generate summary statistics of the assembly.
+
+#### 3. Assembly summary with assembly-scan
+
 
 ``` bash
 module avail seqkit
@@ -280,6 +294,8 @@ assembly-scan /var/scratch/user3/illumina_downloads/results/illumina/klebs/shovi
   --transpose \
   | tee /var/scratch/user3/illumina_downloads/results/illumina/klebs/shovill/SRR28370701/SRR28370701-assembly-scan.tsv
 ```
+3. Assembly summary with assembly-scan
+
 
 Compute the GC content of the assembly using the output from assembly-scan output
 ``` bash
