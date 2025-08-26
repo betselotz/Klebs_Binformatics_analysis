@@ -297,7 +297,7 @@ assembly-scan ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \
   --transpose \
   | tee ./results/illumina/klebs/shovill/SRR28370701/SRR28370701-assembly-scan.tsv
 ```
-#### 4. Compute GC content from assembly-scan output
+##### 4. Compute GC content from assembly-scan output
 ``` bash
 grep 'contig_percent_[cg]' \
   ./results/illumina/klebs/shovill/SRR28370701/SRR28370701-assembly-scan.tsv \
@@ -310,17 +310,18 @@ grep 'contig_percent_[cg]' \
 #### 1. Copy assembly to HPC home directory
 
 ```bash
-rsync -avP \                               # rsync: transfer files securely with archive mode, verbose output, and progress
-    --partial \                            # Keep partially transferred files if interrupted
-    ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \  # Source file: the assembly on HPC
-    ~/
-```                                  # Destination: home directory on the HPC
+rsync -avP \                                      # rsync: transfer files securely with archive mode, verbose output, and progress
+    --partial \                                 # Keep partially transferred files if interrupted
+    ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \        # Source file: the assembly on HPC
+    ~/                                                  # Destination: home directory on the HPC
+``` 
+                             
 #### 2. Download assembly to local machine
-```bash
-rsync -avP --partial user3@hpc.ilri.cgiar.org:~/SRR28370682.fa \  # Source: HPC home directory file, replace 'user3' with your HPC username
-    ~/AMR_training/group1/                                         # Destination: local directory on your computer
-```
 
+```bash 
+rsync -avP --partial user3@hpc.ilri.cgiar.org:~/SRR28370682.fa \     # Source: HPC home directory file, replace 'user3' with your HPC username
+    ~/AMR_training/group1/                                           # Destination: local directory on your computer
+```
 
 # Step 5: Genome Annotation
 
