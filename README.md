@@ -98,7 +98,7 @@ curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR283/001/SRR28370701/SRR28370701_2.
 When downloading from SRA Explorer, the FASTQ files may have long descriptive names such as:  
 
 
-# Loop through every FASTQ file ending with .fastq.gz in the current directory
+### Loop through every FASTQ file ending with .fastq.gz in the current directory (Group leader)
 ``` bash
 for f in *.fastq.gz; do
 
