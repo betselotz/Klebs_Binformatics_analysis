@@ -125,7 +125,7 @@ Within our project directory, we can create well-organized subfolders for the *K
 ```bash
 mkdir -p \
 results/illumina/klebs/{fastqc,fastp,fastq-scan,shovill,prokka,amrfinder,mlst,kaptive,resfinder,iqtree,snippy,snippy-core,gubbins,tmp/{shovill,prokka,resfinder,amrfinder,snippy}}
-``c
+```
 
 Group members created symbolic links to the relevant `data` folders in our current working directory.  
 
