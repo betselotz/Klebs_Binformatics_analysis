@@ -456,7 +456,7 @@ done
 
 #### Merge MLST Reports
 
-After running MLST on multiple assemblies, we can combine all individual TSV files into a single consolidated file for easier comparison and downstream analysis.
+After running MLST on multiple assemblies, we combined all individual TSV files into a single consolidated file for easier comparison and downstream analysis.
 
 ```bash
 cat \
@@ -464,38 +464,49 @@ cat \
     ./results/illumina/klebs/mlst/klebs-mlst.txt     # Save the merged output as a single text file
 ```
 
-#### Assign sequence types using web resources
+### Serotyping using Kaptive
 
-BIGSdb platform curated by the Institute Pasteur
-(https://bigsdb.pasteur.fr/klebsiella)
+Kaptive is a bioinformatics tool used for **in silico identification of Klebsiella capsule (K) and O antigen loci** from genome assemblies.  
 
+**Why we do this:**  
+- **Capsule (K) and O antigen typing** is critical because these surface polysaccharides are major virulence factors in Klebsiella.  
+- Helps identify **high-risk clones** associated with outbreaks or severe infections.  
+- Enables **comparative genomics** and tracking of **capsule and LPS diversity** across isolates.  
+- Supports **vaccine research and epidemiology**, since K and O antigens are targets for vaccine development.  
+- Complements MLST typing by providing **additional discriminatory power** for strain characterization.
 
-# Serotyping using Kaptive
-### K antigen and locus
+---
 
-``` bash
-mkdir -p ./results/illumina/klebs/kaptive
+#### K antigen and locus
+-  The **K antigen** is the **capsular polysaccharide** surrounding Klebsiella cells.  
+- It plays a major role in **immune evasion and virulence** by protecting bacteria from phagocytosis and complement-mediated killing.  
+- The **K locus** in the genome encodes enzymes responsible for synthesizing the capsular polysaccharide.  
+- Kaptive uses the K locus to **predict the capsule type** from genome assemblies. 
+
+```bash
+mkdir -p ./results/illumina/klebs/kaptive  # Create output directory for Kaptive results
+kaptive assembly \
+  /export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_k_locus_primary_reference.gbk \  # Reference K locus database
+  ./pathogenwatch/klebs/assemblies-to-test/*.fasta \   # Input genome assemblies
+  --min-cov 70 \                                       # Minimum coverage threshold for reporting
+  -t 2 \                                               # Number of threads
+  -o ./results/illumina/klebs/kaptive/kaptive_k_locus.tsv  # Output file for K locus typing
+```
+#### O antigen and locus
+- The **O antigen**  is part of the **lipopolysaccharide (LPS)**  on the outer membrane of Gram-negative bacteria.  
+- It is important for **host immune recognition** and contributes to bacterial pathogenicity.  
+- The **O locus**  contains genes responsible for synthesizing the O antigen sugar structures.  
+- Kaptive identifies the **O antigen type** by comparing the O locus in genome assemblies to reference databases.  
+
+```bash
+kaptive assembly \
+  /export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_o_locus_primary_reference.gbk \  # Reference O locus database
+  ./pathogenwatch/klebs/assemblies-to-test/*.fasta \   # Input genome assemblies
+  --min-cov 70 \                                       # Minimum coverage threshold
+  -t 2 \                                               # Number of threads
+  -o ./results/illumina/klebs/kaptive/kaptive_o_locus.tsv  # Output file for O locus typing
 ```
 
-``` bash
-kaptive assembly \
-  /export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_k_locus_primary_reference.gbk \
-  ./pathogenwatch/klebs/assemblies-to-test/*.fasta \
-  --min-cov 70 \
-  -t 2 \
-  -o ./results/illumina/klebs/kaptive/kaptive_k_locus.tsv
-```
-
-### O antigen and locus
-
-``` bash 
-kaptive assembly \
-  /export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_o_locus_primary_reference.gbk \
-  ./pathogenwatch/klebs/assemblies-to-test/*.fasta \
-  --min-cov 70 \
-  -t 2 \
-  -o ./results/illumina/klebs/kaptive/kaptive_o_locus.tsv
-```  
 
 ### Kaptive Web
 we uploaded our assemblies to
