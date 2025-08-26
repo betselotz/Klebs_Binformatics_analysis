@@ -177,7 +177,7 @@ cp ./results/illumina/klebs/fastqc/*html ~/
 We use `rsync` to securely copy the file:  
 
 ```bash
-rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370701*.html ~/
+rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370701*.html ~/AMR_training/group1/     
 ```
 
 ### Quality Trimming FASTQ Files with fastp (Adapter and Quality Trimming)
@@ -213,7 +213,7 @@ cp ./results/illumina/klebs/fastp/SRR28370701.fastp.html ~/
 2. **Transfer the Report to Your Local Computer** 
 
 ```bash
-rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370701.fastp.html ~/
+rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370701.fastp.html ~/AMR_training/group1/ 
 ```
  - Examine the report.
  
