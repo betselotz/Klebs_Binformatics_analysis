@@ -116,8 +116,6 @@ for f in *.fastq.gz; do
 done
 ```
 
-
-
 ### Create a Structured Project Directory  
 
 Within our project directory, we can create well-organized subfolders for the *Klebsiella* analysis:  
@@ -313,11 +311,11 @@ rsync -avP --partial \
     ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \
     ~/
 ```
-                             
+```bash                             
 #### 2. Download assembly to local machine
-```bash
-rsync -avP --partial user3@hpc.ilri.cgiar.org:~/SRR28370682.fa \  
-    ~/AMR_training/group1/                                         
+
+rsync -avP --partial user3@hpc.ilri.cgiar.org:~/SRR28370682.fa \
+    ~/AMR_training/group1/
 ```
 
 ## Step 5: Genome Annotation with Prokka
