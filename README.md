@@ -37,6 +37,66 @@ First, log in to the High-Performance Computing (HPC) cluster using your assigne
 ```bash
 ssh <user_name>@hpc.ilri.cgiar.org
 ```
+
+##  Bioinformatics Analysis  
+Group leader created a `data` directory inside `illumina_downloads` to download our raw sequencing data:  
+
+```bash
+mkdir data
+cd data
+```
+### 📥 Download Data from NCBI  (Group leader)
+
+---
+
+#### Using SRA Explorer  
+
+1. Go to **[SRA Explorer](https://sra-explorer.info/#)**  
+2. Search for:  SRR28370701
+
+3. In the search results, check the following boxes:  
+- ✅ *WGS of Klebsiella pneumoniae isolate*  
+- ✅ *Add 1 to collection*  
+- ✅ *1 data saved*  
+- ✅ *Bash script for downloading FastQ files*  
+
+4. Download the generated Bash script (e.g., `sra_download.sh`)  
+5. Run the script to download the FASTQ file(s):  
+```bash
+#!/usr/bin/env bash     # tells system to run this with bash
+
+# download read 1
+curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR283/001/SRR28370701/SRR28370701_1.fastq.gz \
+  -o SRR28370701_WGS_of_Klebsiella_pneumoniae_isolate_1.fastq.gz
+
+# download read 2
+curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR283/001/SRR28370701/SRR28370701_2.fastq.gz \
+  -o SRR28370701_WGS_of_Klebsiella_pneumoniae_isolate_2.fastq.gz
+```
+### 📝 Renaming FASTQ Files  
+
+When downloading from SRA Explorer, the FASTQ files may have long descriptive names such as:  
+
+
+# Loop through every FASTQ file ending with .fastq.gz in the current directory
+``` bash
+for f in *.fastq.gz; do
+
+    # Extract the accession ID (SRR followed by digits) from the filename
+    # Example: "SRR28370701_WGS_of_Klebsiella_pneumoniae_isolate_2.fastq.gz" → "SRR28370701"
+    base=$(echo "$f" | grep -oP 'SRR[0-9]+')
+
+    # Extract the read number (_1 or _2) right before ".fastq.gz"
+    # Example: "_2" from "..._isolate_2.fastq.gz"
+    readnum=$(echo "$f" | grep -oP '_[12](?=\.fastq\.gz)')
+
+    # Rename the file to "<SRR_accession><readnum>.fastq.gz"
+    # Example: SRR28370701_WGS_of_Klebsiella_pneumoniae_isolate_2.fastq.gz → SRR28370701_2.fastq.gz
+    mv "$f" "${base}${readnum}.fastq.gz"
+done
+```
+
+
 We all worked on 
 
 >Compute05  
@@ -87,63 +147,6 @@ module load mlst/2.23.0         # MLST typing
 module load amrfinder/4.0.22    # AMR gene detection and annotation
 ```
 
-##  Bioinformatics Analysis  
-We create a `data` directory inside `illumina_downloads` to download our raw sequencing data:  
-
-```bash
-mkdir data
-cd data
-```
-### 📥 Download Data from NCBI  
-
----
-
-#### Option 1: Using SRA Explorer  
-
-1. Go to **[SRA Explorer](https://sra-explorer.info/#)**  
-2. Search for:  SRR28370701
-
-3. In the search results, check the following boxes:  
-- ✅ *WGS of Klebsiella pneumoniae isolate*  
-- ✅ *Add 1 to collection*  
-- ✅ *1 data saved*  
-- ✅ *Bash script for downloading FastQ files*  
-
-4. Download the generated Bash script (e.g., `sra_download.sh`)  
-5. Run the script to download the FASTQ file(s):  
-```bash
-#!/usr/bin/env bash     # tells system to run this with bash
-
-# download read 1
-curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR283/001/SRR28370701/SRR28370701_1.fastq.gz \
-  -o SRR28370701_WGS_of_Klebsiella_pneumoniae_isolate_1.fastq.gz
-
-# download read 2
-curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR283/001/SRR28370701/SRR28370701_2.fastq.gz \
-  -o SRR28370701_WGS_of_Klebsiella_pneumoniae_isolate_2.fastq.gz
-```
-### 📝 Renaming FASTQ Files  
-
-When downloading from SRA Explorer, the FASTQ files may have long descriptive names such as:  
-
-
-# Loop through every FASTQ file ending with .fastq.gz in the current directory
-``` bash
-for f in *.fastq.gz; do
-
-    # Extract the accession ID (SRR followed by digits) from the filename
-    # Example: "SRR28370701_WGS_of_Klebsiella_pneumoniae_isolate_2.fastq.gz" → "SRR28370701"
-    base=$(echo "$f" | grep -oP 'SRR[0-9]+')
-
-    # Extract the read number (_1 or _2) right before ".fastq.gz"
-    # Example: "_2" from "..._isolate_2.fastq.gz"
-    readnum=$(echo "$f" | grep -oP '_[12](?=\.fastq\.gz)')
-
-    # Rename the file to "<SRR_accession><readnum>.fastq.gz"
-    # Example: SRR28370701_WGS_of_Klebsiella_pneumoniae_isolate_2.fastq.gz → SRR28370701_2.fastq.gz
-    mv "$f" "${base}${readnum}.fastq.gz"
-done
-```
 
 ### Assessing Read Quality using FastQC (before quality trimming)
 
