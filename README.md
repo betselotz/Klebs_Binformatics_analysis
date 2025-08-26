@@ -165,7 +165,7 @@ fastqc \
 
 ## Download and Explore FastQC Results
 
-After running `FastQC`, you can download the resulting HTML reports to your local machine for evaluation.  
+After running `FastQC`, we downloaded the resulting HTML reports to our HPC home directory and our local computer for visualization.  
 
 1. **Copy the HTML results to your home directory on the cluster**  
 
