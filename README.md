@@ -311,14 +311,14 @@ grep 'contig_percent_[cg]' \
 
 ```bash
 rsync -avP --partial \
-    ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \  # Source file: assembled genome on HPC
-    ~/                                                              # Destination: home directory on HPC
+    ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa \  
+    ~/                                                              
 ```
                              
 #### 2. Download assembly to local machine
 ```bash
-rsync -avP --partial user3@hpc.ilri.cgiar.org:~/SRR28370682.fa \  # Source: HPC home directory file, replace 'user3' with your HPC username
-    ~/AMR_training/group1/                                         # Destination: local directory on your computer
+rsync -avP --partial user3@hpc.ilri.cgiar.org:~/SRR28370682.fa \  
+    ~/AMR_training/group1/                                         
 ```
 
 ## Step 5: Genome Annotation with Prokka
