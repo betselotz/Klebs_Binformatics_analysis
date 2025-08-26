@@ -1,125 +1,150 @@
-# Bioinformatics Analysis of Klebsiella pneumoniae of Illumina# 
+# Bioinformatics Analysis of Klebsiella pneumoniae of Illumina
+# Group 1
 
 ---  
 
 ###### **Group_members **: [Betselot Zerihun Ayano ](https://github.com/betselotz), KICONCO BENADINE, Vera Morangi Onwonga, Kiconco Benadine, Nkiruka Lynda Uzoebo & Nambozo Eunice Jennifer
 
 ---
+## 🧬 Introduction – *Klebsiella pneumoniae*
 
-## Introduction – Klebsiella pneumoniae
+### Opportunistic Pathogen  
+- Gram-negative bacterium  
+- Causes hospital-acquired infections: **pneumonia, bloodstream infections, urinary tract infections**  
 
-    **Opportunistic Pathogen**
+### Antimicrobial Resistance (AMR)  
+- Produces **extended-spectrum β-lactamases (ESBLs)** and **carbapenemases** (e.g., KPC, NDM)  
+- Severely limits treatment options, including last-resort **carbapenems**  
 
-        Gram-negative bacterium
+### Drug-Resistant Strains  
+- **MDR (multidrug-resistant)** & **XDR (extensively drug-resistant)**  
+- Spread via **plasmid-mediated genes** and **successful clonal lineages**  
 
-        Causes hospital-acquired infections: pneumonia, bloodstream, urinary tract
+### Genomic Insights  
+- **Whole-genome sequencing (WGS):** tracks resistance genes & plasmids  
+- **Phylogenomics:** reveals clonal expansion and transmission routes  
+- **Pangenome analysis:** highlights core vs. accessory genes driving adaptation  
+- **Mobile genetic elements (MGEs):** key role in resistance gene dissemination  
 
-    **Antimicrobial Resistance (AMR)** 
+### Public Health Impact  
+- Rapid global dissemination in **healthcare settings**  
+- Major challenge for **infection prevention and treatment**  
 
-        Produces ESBLs and carbapenemases (KPC, NDM, etc.)
+##  Setting up the Bioinformatics Analysis Environment  
 
-        Limits treatment options, including last-resort carbapenems
-
-    **Drug-Resistant Strains**
-
-        MDR (multidrug-resistant) & XDR (extensively drug-resistant)
-
-        Spread via plasmid-mediated genes and successful clonal lineages
-
-    **Genomic Insights**
-
-        Whole-genome sequencing (WGS): tracks resistance genes & plasmids
-
-        Phylogenomics: reveals clonal expansion and transmission routes
-
-        Pangenome analysis: highlights core vs. accessory genes driving adaptation
-
-        Mobile genetic elements (MGEs): key role in resistance gene dissemination
-
-    **Public Health Impact**
-
-        Rapid global dissemination in healthcare settings
-
-        Major challenge for infection prevention and treatment
----
-
-
-## Setting up the Bioinformatics analysis environment
-
-### Set up directories  
-
- - Before starting the analysis, ensure that you are logged into the HPC, create an interactive session on the assigned compute node, and change directory to the project folder which is `ACDC_AMR2025`.  
- - First log in to the HPC.   
-
-```
+###  Log in to the HPC  
+First, log in to the High-Performance Computing (HPC) cluster using your assigned credentials:  
+```bash
 ssh <user_name>@hpc.ilri.cgiar.org
 ```
-  
+Wel all worked on 
+
 >Compute05  
-```
+``` bash
 interactive -w compute05 -c 2 -J amr-surveillance -p batch
 ```
->Compute06  
+
 ```
-interactive -w compute06 -c 2 -J amr-surveillance -p batch
-```
- - Setting up the project directory structure.  
+### 📂 Setting Up the Project Directory Structure  
+
+Create a working directory on the HPC scratch space and move into it:  
 
 ```bash
 mkdir -p /var/scratch/$USER/illumina_downloads
+```
+We changed directory into 
+
+```bash
 cd /var/scratch/$USER/illumina_downloads
 ```
 
- - Within our project directory let us create a structured project directories:
+### 📂 Create a Structured Project Directory  
+
+Within our project directory, we can create well-organized subfolders for the *Klebsiella* analysis:  
 
 ```bash
 mkdir -p \
-results/illumina/ecoli/{fastqc,fastp,fastq-scan,shovill,prokka,resfinder,amrfinder,mlst,tmp/{shovill,prokka,resfinder,amrfinder}}
-```
+results/illumina/klebs/{fastqc,fastp,fastq-scan,shovill,prokka,amrfinder,mlst,kaptive,resfinder,iqtree,snippy,snippy-core,gubbins,tmp/{shovill,prokka,resfinder,amrfinder,snippy}}
+``` 
 
- - Then let us link some data.  
- 
-Our analysis data is in the group leader diretory `ln -sf /var/scratch/user3/illumina_downloads/`. We will create a symbolic link of the folders with data to current directory.
+We created symbolic links to the relevant data folders in our current working directory.  
 
 ```bash
 ln -sf /var/scratch/user3/illumina_downloads/[dps]* .
 ```
 
-### Load modules
+### 🧰 Load Required Modules  
 
-```
-module load fastqc/0.11.9
-module load fastp/0.22.0
-module load bbmap/38.95
-module load shovill/1.1.0
-module load prokka/1.14.6
-module load resfinder/4.6.0
-module load mlst/2.23.0
-module load amrfinder/4.0.22
+Before running the analyses, load the necessary bioinformatics tools on the HPC:  
+
+```bash
+module load fastqc/0.11.9       # Quality control of raw reads
+module load fastp/0.22.0        # Read trimming and filtering
+module load bbmap/38.95         # Read mapping and QC utilities
+module load shovill/1.1.0       # Genome assembly (Illumina)
+module load prokka/1.14.6       # Genome annotation
+module load resfinder/4.6.0     # Antimicrobial resistance gene detection
+module load mlst/2.23.0         # MLST typing
+module load amrfinder/4.0.22    # AMR gene detection and annotation
 ```
 
-## Bioinformatics Analysis
-we make directory called data inside illumina downloads to download our raw data in it. 
+##  Bioinformatics Analysis  
+We create a `data` directory inside `illumina_downloads` to download our raw sequencing data:  
+
 ```bash
 mkdir data
 cd data
 ```
-### Download data from NCBI using sra explorer  
-### Option 1: SRA
- - Go to SRA (https://sra-explorer.info/#)  
- - search: `SRR28370701`  
- - checkboxes to check in SRA:  
-`   - `WGS of Klebsiella pneumoniae isolate`;
-    - `add 1 to collection`;
-    - `1 data saved`;
-    - `Bash script for downloading FastQ files` 
+### 📥 Download Data from NCBI  
 
+---
+
+#### Option 1: Using SRA Explorer  
+
+1. Go to **[SRA Explorer](https://sra-explorer.info/#)**  
+2. Search for:  SRR28370701
+
+3. In the search results, check the following boxes:  
+- ✅ *WGS of Klebsiella pneumoniae isolate*  
+- ✅ *Add 1 to collection*  
+- ✅ *1 data saved*  
+- ✅ *Bash script for downloading FastQ files*  
+
+4. Download the generated Bash script (e.g., `sra_download.sh`)  
+5. Run the script to download the FASTQ file(s):  
 ```bash
-#!/usr/bin/env bash
-curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR283/001/SRR28370701/SRR28370701_1.fastq.gz -o SRR28370701_WGS_of_Klebsiella_pneumoniae_isolate_1.fastq.gz
-curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR283/001/SRR28370701/SRR28370701_2.fastq.gz -o SRR28370701_WGS_of_Klebsiella_pneumoniae_isolate_2.fastq.gz
-```
+#!/usr/bin/env bash     # tells system to run this with bash
 
+# download read 1
+curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR283/001/SRR28370701/SRR28370701_1.fastq.gz \
+  -o SRR28370701_WGS_of_Klebsiella_pneumoniae_isolate_1.fastq.gz
+
+# download read 2
+curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR283/001/SRR28370701/SRR28370701_2.fastq.gz \
+  -o SRR28370701_WGS_of_Klebsiella_pneumoniae_isolate_2.fastq.gz
+```
+### 📝 Renaming FASTQ Files  
+
+When downloading from SRA Explorer, the FASTQ files may have long descriptive names such as:  
+
+
+# Loop through every FASTQ file ending with .fastq.gz in the current directory
+``` bash
+for f in *.fastq.gz; do
+
+    # Extract the accession ID (SRR followed by digits) from the filename
+    # Example: "SRR28370701_WGS_of_Klebsiella_pneumoniae_isolate_2.fastq.gz" → "SRR28370701"
+    base=$(echo "$f" | grep -oP 'SRR[0-9]+')
+
+    # Extract the read number (_1 or _2) right before ".fastq.gz"
+    # Example: "_2" from "..._isolate_2.fastq.gz"
+    readnum=$(echo "$f" | grep -oP '_[12](?=\.fastq\.gz)')
+
+    # Rename the file to "<SRR_accession><readnum>.fastq.gz"
+    # Example: SRR28370701_WGS_of_Klebsiella_pneumoniae_isolate_2.fastq.gz → SRR28370701_2.fastq.gz
+    mv "$f" "${base}${readnum}.fastq.gz"
+done
+```
 
 ### Assessing Read Quality using fastqc before quality trimming  
 
