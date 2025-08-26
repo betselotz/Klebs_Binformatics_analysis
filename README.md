@@ -230,7 +230,6 @@ rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370701.fastp.html ~/AMR_
 - Provides a foundation for **genome annotation, typing, and comparative genomics**.
 
 ```bash
-# Set temporary directory for Shovill intermediate files
 export TMPDIR="./results/illumina/klebs/tmp/shovill"
 ```
 ###  Run Shovill assembly
@@ -315,7 +314,7 @@ grep 'contig_percent_[cg]' \
 ```
 
 
-### 💻 Transfer Assembly to Local Computer
+###  Transfer Assembly to Local Computer
 
 #### 1. Copy assembly to HPC home directory
 ```bash
@@ -370,7 +369,7 @@ Data source: [Pathogenwatch Klebsiella genomes](https://pathogen.watch/genomes/a
 
 #### 1. Create a directory for global assemblies
 ```bash
-mkdir -p ./pathogenwatch/klebs/assemblies-to-test   # -p creates parent directories if they do not exist
+mkdir -p ./pathogenwatch/klebs/assemblies-to-test
 ```
 #### 2.  Add our genome assembly to the directory
 ```bash
