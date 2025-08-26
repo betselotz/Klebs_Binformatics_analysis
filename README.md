@@ -6,21 +6,21 @@
 ###### **Group_members **: [Betselot Zerihun Ayano ](https://github.com/betselotz), KICONCO BENADINE, Vera Morangi Onwonga, Kiconco Benadine, Nkiruka Lynda Uzoebo & Nambozo Eunice Jennifer
 
 ---
-## 🧬 Introduction – *Klebsiella pneumoniae*
+##  Introduction – *Klebsiella pneumoniae*
 
-### Opportunistic Pathogen  
+#### Opportunistic Pathogen  
 - Gram-negative bacterium  
 - Causes hospital-acquired infections: **pneumonia, bloodstream infections, urinary tract infections**  
 
-### Antimicrobial Resistance (AMR)  
+#### Antimicrobial Resistance (AMR)  
 - Produces **extended-spectrum β-lactamases (ESBLs)** and **carbapenemases** (e.g., KPC, NDM)  
 - Severely limits treatment options, including last-resort **carbapenems**  
 
-### Drug-Resistant Strains  
+#### Drug-Resistant Strains  
 - **MDR (multidrug-resistant)** & **XDR (extensively drug-resistant)**  
 - Spread via **plasmid-mediated genes** and **successful clonal lineages**  
 
-### Genomic Insights  
+#### Genomic Insights  
 - **Whole-genome sequencing (WGS):** tracks resistance genes & plasmids  
 - **Phylogenomics:** reveals clonal expansion and transmission routes  
 - **Pangenome analysis:** highlights core vs. accessory genes driving adaptation  
@@ -37,7 +37,7 @@ First, log in to the High-Performance Computing (HPC) cluster using your assigne
 ```bash
 ssh <user_name>@hpc.ilri.cgiar.org
 ```
-Wel all worked on 
+We all worked on 
 
 >Compute05  
 ``` bash
