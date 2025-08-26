@@ -215,30 +215,42 @@ rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370701.fastp.html ~/AMR_
 ```
  - Examine the report.
  
-###  De novo Genome Assembly:Shovill
+### De novo Genome Assembly: Shovill
 
-**Shovill** is a pipeline for **fast de novo assembly of bacterial genomes** from Illumina paired-end reads.
+**Shovill** is a pipeline designed for **fast and automated assembly of bacterial genomes** from Illumina paired-end reads.  
+
+**Key points:**  
+- Uses **SPAdes, SKESA, or other assemblers** internally to build contigs.  
+- Performs **adapter trimming, error correction, and read filtering** before assembly.  
+- Produces a **high-quality draft genome** suitable for downstream analyses such as annotation, MLST, and AMR gene detection.  
+- Optimized for **speed and low memory usage** on HPC environments.  
+
+**Why we use it:**  
+- Converts raw sequencing reads into **contiguous genome sequences** (contigs).  
+- Provides a foundation for **genome annotation, typing, and comparative genomics**.
+
 ```bash
 # Set temporary directory for Shovill intermediate files
 export TMPDIR="./results/illumina/klebs/tmp/shovill"
-
+```
 # Run Shovill assembly
+```bash
 shovill \
-  --R1 ./results/illumina/klebs/fastp/SRR28370701_trim_R1.fastq.gz \   # Forward reads
-  --R2 ./results/illumina/klebs/fastp/SRR28370701_trim_R2.fastq.gz \   # Reverse reads
-  --gsize 5249449 \                                                    # Approximate genome size (bp)
-  --outdir ./results/illumina/klebs/shovill/SRR28370701 \              # Output directory
-  --assembler skesa \                                                  # Assembler to use
-  --minlen 500 \                                                       # Minimum contig length
-  --mincov 2 \                                                         # Minimum contig coverage
-  --force \                                                            # Overwrite output if exists
-  --keepfiles \                                                        # Keep intermediate files
-  --depth 0 \                                                          # Use all reads
-  --noreadcorr \                                                       # Skip read correction
-  --namefmt "SRR28370701_%05d" \                                       # Contig naming format
-  --cpus 4 \                                                           # Number of CPU threads
-  --ram 16 \                                                           # Maximum RAM (GB)
-  --tmpdir $TMPDIR                                                     # Temporary folder
+  --R1 ./results/illumina/klebs/fastp/SRR28370701_trim_R1.fastq.gz \
+  --R2 ./results/illumina/klebs/fastp/SRR28370701_trim_R2.fastq.gz \
+  --gsize 5249449 \
+  --outdir ./results/illumina/klebs/shovill/SRR28370701 \
+  --assembler skesa \
+  --minlen 500 \
+  --mincov 2 \
+  --force \
+  --keepfiles \
+  --depth 0 \
+  --noreadcorr \
+  --namefmt "SRR28370701_%05d" \
+  --cpus 4 \
+  --ram 16 \
+  --tmpdir $TMPDIR
 ```
 
 ### Rename Assembly Output
