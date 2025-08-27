@@ -821,7 +821,7 @@ rsync \
 ```
 Download alignment file into local computer
 ```bash
-rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370701.bam \
+rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370701.bam* \
     ~/AMR_training/group1/
 ```
     
