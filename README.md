@@ -16,10 +16,6 @@
 - Produces **extended-spectrum β-lactamases (ESBLs)** and **carbapenemases** (e.g., KPC, NDM)  
 - Severely limits treatment options, including last-resort **carbapenems**  
 
-#### Drug-Resistant Strains  
-- **MDR (multidrug-resistant)** & **XDR (extensively drug-resistant)**  
-- Spread via **plasmid-mediated genes** and **successful clonal lineages**  
-
 #### Genome Overview
 
 **Genome size:** Approximately 5.5 Mbp  
