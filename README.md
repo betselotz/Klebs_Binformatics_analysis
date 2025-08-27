@@ -20,15 +20,25 @@
 - **MDR (multidrug-resistant)** & **XDR (extensively drug-resistant)**  
 - Spread via **plasmid-mediated genes** and **successful clonal lineages**  
 
-#### Genomic Insights  
-- **Whole-genome sequencing (WGS):** tracks resistance genes & plasmids  
-- **Phylogenomics:** reveals clonal expansion and transmission routes  
-- **Pangenome analysis:** highlights core vs. accessory genes driving adaptation  
-- **Mobile genetic elements (MGEs):** key role in resistance gene dissemination  
+# Genome Overview
 
-### Public Health Impact  
-- Rapid global dissemination in **healthcare settings**  
-- Major challenge for **infection prevention and treatment**  
+**Genome size:** Approximately 5.5 Mbp  
+(Typical range: 5.0–5.6 Mbp depending on the strain)
+
+**GC content:** Typically around 57%
+
+## Summary Table
+
+| Feature                     | Typical Value / Range                             |
+|-------------------------------|------------------------------------------------|
+| Genome size                   | ~5.0–5.6 Mbp (up to ~6.7 Mbp in exceptional cases) |
+| GC content                    | ~56–58% (commonly ~57%)                         |
+| Gene count                    | ~5,200–5,400                                   |
+| Accessory genes               | ~3,500 (dynamic genome components)            |
+| Plasmids                      | Common; often carry AMR genes                  |
+| CRISPR systems                | Present in some strains (e.g., U25)           |
+| Resistance / Virulence genes  | Frequently present in accessory genome         |
+ 
 
 ##  Setting up the Bioinformatics Analysis Environment  
 
