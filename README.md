@@ -692,18 +692,36 @@ amrfinder \
 View the full results with paging
 ```bash
 less ./results/illumina/klebs/amrfinder/SRR28370701.tsv
-`
+```
 count the total number of detected AMR genes``
 ```bash
 grep -v "^#" ./results/illumina/klebs/amrfinder/SRR28370701.tsv | wc -l
 ```
- Count AMR genes by drug class
+How many AMR genes are on the + strand, - strand, or have unspecified strand information in our AMRFinder results.
+
 ```bash
 grep -v "^#" ./results/illumina/klebs/amrfinder/SRR28370701.tsv \
     | awk -F"\t" '{print $6}' \
     | sort \
     | uniq -c \
     | sort -nr
+```
+
+extracts all detected AMR genes from our AMRFINDER_DIR output
+```bash
+#!/bin/bash
+
+AMRFINDER_DIR="./results/illumina/klebs/amrfinder"
+INPUT_FILE="$AMRFINDER_DIR/SRR28370701.tsv"
+OUTPUT_FILE="$AMRFINDER_DIR/SRR28370701_gene_counts.txt"
+
+# Remove empty lines and header, extract gene name and class (adjust columns if needed)
+grep -v "^#" "$INPUT_FILE" | awk -F'\t' 'NR>1 {print $6 "\t" $7}' \
+    | sort | uniq -c \
+    | sort -nr > "$OUTPUT_FILE"
+
+echo "AMR gene counts by class saved to $OUTPUT_FILE"
+cat "$OUTPUT_FILE"
 ```
 
 ### Variant Calling and Consensus Assemblies
