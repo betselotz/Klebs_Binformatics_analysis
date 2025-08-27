@@ -816,7 +816,7 @@ rsync \
     -avP \
     --partial \
     ./results/illumina/klebs/snippy/SRR28370701/SRR28370701.bam* \
-    ~/    # Copies BAM and BAM index files to home directory
+    ~/
 ```
 
 Visualisation of Snippy Variants using IGV
