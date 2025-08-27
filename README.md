@@ -633,6 +633,21 @@ mkdir -p ./results/illumina/klebs/tmp/snippy
 ```
 Contig-based variant calling with `snippy`:
 Contig-based variant calling with Snippy is a method where pre-assembled genome sequences (contigs) are compared against a reference genome to identify genetic variants such as single nucleotide polymorphisms (SNPs) or small insertions/deletions (indels).
+For Our Single Sample
+```bash
+snippy \
+  --reference ./results/illumina/klebs/snippy/GCF_000016305.1_ASM1630v1_genomic.gbff \
+  --ctgs ./results/illumina/klebs/snippy/SRR28370701.fa \
+  --cpus 2 \
+  --ram 8 \
+  --tmpdir "$TMPDIR" \
+  --mapqual 60 \
+  --basequal 13 \
+  --force \
+  --outdir results/illumina/klebs/snippy \
+  --prefix SRR28370701
+```
+For pathogenwatch assemblies to test sample
 ```bash
 for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
     sample=$(basename $fn)
