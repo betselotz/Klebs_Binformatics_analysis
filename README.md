@@ -762,8 +762,8 @@ Contig-based variant calling with Snippy is a method where pre-assembled genome 
 For Our Single Sample
 ```bash
 snippy \
-  --reference ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.fna \
-  --ctgs ./results/illumina/klebs/snippy/SRR28370701/SRR28370701.fa \
+  --reference ./results/illumina/klebs/snippy/GCF_000016305.1_ASM1630v1_genomic.fa \
+  --ctgs ./results/illumina/klebs/snippy/SRR28370701.fa \
   --cpus 2 \
   --ram 8 \
   --tmpdir "$TMPDIR" \
@@ -815,7 +815,7 @@ Copy the BAM file and its index for the aligned reads:
 rsync \
     -avP \
     --partial \
-    ./results/illumina/klebs/snippy/SRR28370701/SRR28370701.bam* \
+    ./results/illumina/klebs/snippy/SRR28370701.bam* \
     ~/
 ```
 
