@@ -754,30 +754,35 @@ Create the directory if it does not exist
 mkdir -p ./results/illumina/klebs/tmp/snippy
 ```
 Contig-based variant calling with `snippy`:
-Contig-based variant calling with Snippy is a method where pre-assembled genome sequences (contigs) are compared against a reference genome to identify genetic variants such as single nucleotide polymorphisms (SNPs) or small insertions/deletions (indels).
+Contig-based variant calling with Snippy is a method where pre-assembled genome sequences (contigs) are compared against a reference genome to identify genetic variants such as single-nucleotide polymorphisms (SNPs) or small insertions/deletions (indels).
 For Our Single Sample
 ```bash
+sample="SRR28370701"
+ref="./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.fna"
+contigs="./results/illumina/klebs/shovill/${sample}/${sample}.fa"
+outdir="./results/illumina/klebs/snippy/${sample}"
+rm -rf "$outdir"
 snippy \
-  --reference ./results/illumina/klebs/snippy/GCF_000016305.1_ASM1630v1_genomic.fa \
-  --ctgs ./results/illumina/klebs/snippy/SRR28370701.fa \
+  --reference "$ref" \
+  --ctgs "$contigs" \
   --cpus 2 \
   --ram 8 \
-  --tmpdir "$TMPDIR" \
+  --tmpdir "${TMPDIR:-./tmp}" \
   --mapqual 60 \
   --basequal 13 \
   --force \
-  --outdir results/illumina/klebs/snippy \
-  --prefix SRR28370701
+  --outdir "$outdir" \
+  --prefix "$sample"
 ```
-For pathogenwatch assemblies to test sample
+
+For the pathogenwatch assemblies to test sample
 ```bash
 for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
     sample=$(basename $fn)
     sample="${sample%.*}"
     echo -e "-------------------------------\n"
     echo -e "running snippy on: $sample - $fn"
-    echo -e "-------------------------------\n"
-    
+    echo -e "-------------------------------\n"   
     snippy \
         --force \
         --prefix $sample \
