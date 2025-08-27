@@ -20,14 +20,14 @@
 - **MDR (multidrug-resistant)** & **XDR (extensively drug-resistant)**  
 - Spread via **plasmid-mediated genes** and **successful clonal lineages**  
 
-# Genome Overview
+#### Genome Overview
 
 **Genome size:** Approximately 5.5 Mbp  
 (Typical range: 5.0–5.6 Mbp depending on the strain)
 
 **GC content:** Typically around 57%
 
-## Summary Table
+#### Summary Table
 
 | Feature                     | Typical Value / Range                             |
 |-------------------------------|------------------------------------------------|
