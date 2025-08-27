@@ -263,11 +263,11 @@ mv ./results/illumina/klebs/shovill/SRR28370701/contigs.fa \
 ```
 View large files page by page
 ```bash
-less ./results/illumina/klebs/shovill/SRR28370701/contigs.fa
+less ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa
 ```
 Counted how many contigs we have
 ```bash
-grep -c ">" ./results/illumina/klebs/shovill/SRR28370701/contigs.fa
+grep -c ">" ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa
 ```
 
 ###  Assembly Evaluation
