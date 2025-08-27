@@ -587,14 +587,35 @@ View the full ResFinder results with paging
 ```bash
 less ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt
 ```
-Search for specific AMR genes (e.g., beta-lactamases)
+Count the number of beta-lactam resistance genes
 ```bash
-grep "beta-lactam" ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt | less
+grep "beta-lactam" ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt | grep -v '^$' | wc -l
 ```
 Count the total number of detected AMR genes
 ```bash
 grep -v "^#" ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt | wc -l
 ```
+To extract and list them,
+```bash
+grep -v "^#" ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt | less
+```
+extracts all detected AMR genes from our ResFinder_results_tab.txt
+```bash
+#!/bin/bash
+
+RESFINDER_DIR="./results/illumina/klebs/resfinder/SRR28370701"
+INPUT_FILE="$RESFINDER_DIR/ResFinder_results_tab.txt"
+OUTPUT_FILE="$RESFINDER_DIR/ResFinder_gene_counts.txt"
+
+# Remove empty lines and extract relevant columns (assumes class in column 2, gene name in column 1)
+grep -v "^$" "$INPUT_FILE" | awk -F'\t' '{print $2 "\t" $1}' \
+    | sort | uniq -c \
+    | sort -nr > "$OUTPUT_FILE"
+
+echo "AMR gene counts by class saved to $OUTPUT_FILE"
+cat "$OUTPUT_FILE"
+```
+
 Count specific classes of AMR genes
 ```bash
 grep "aminoglycoside" ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt | wc -l
