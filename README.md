@@ -583,6 +583,25 @@ python -m resfinder \
     --acquired \
     --point
 ```
+View the full ResFinder results with paging
+```bash
+less ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt
+```
+Search for specific AMR genes (e.g., beta-lactamases)
+```bash
+grep "beta-lactam" ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt | less
+```
+Count the total number of detected AMR genes
+```bash
+grep -v "^#" ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt | wc -l
+```
+Count specific classes of AMR genes
+```bash
+grep "aminoglycoside" ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt | wc -l
+grep "fluoroquinolone" ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt | wc -l
+grep "colistin" ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt | wc -l
+grep "tetracycline" ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt | wc -l
+```
 
 ### Batch AMR Detection
 
