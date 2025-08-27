@@ -805,7 +805,7 @@ rsync \
     ./results/illumina/klebs/snippy/SRR28370701/reference/ref.fa.fai \
     ~/
 ```
-Download alignment file into local computer
+Download the reference genome file into local computer
 ```bash
 rsync -avP <USERXX>@hpc.ilri.cgiar.org:~/ref.fa* \
     ~/AMR_training/group1/
