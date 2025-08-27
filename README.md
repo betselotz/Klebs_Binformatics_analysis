@@ -742,6 +742,7 @@ We perform contig-based variant calling using **Snippy**, which identifies singl
 Define a temporary directory for Snippy intermediate files
 ```bash
 export TMPDIR=$(pwd)/results/illumina/klebs/tmp/snippy/
+```
 Create the directory if it does not exist
 ```bash
 mkdir -p ./results/illumina/klebs/tmp/snippy
