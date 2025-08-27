@@ -463,14 +463,6 @@ View the full MLST output with page
 ```bash
 less ./results/illumina/klebs/mlst/SRR28370701.tsv
 ```
-Finds lines containing "ST" (sequence type) in the output. 
-```bash
-grep "ST" ./results/illumina/klebs/mlst/SRR28370701.tsv
-```
-Filters lines containing a specific gene/locus, here gapA.
-```bash
-grep "gapA" ./results/illumina/klebs/mlst/SRR28370701.tsv
-```
 Pipes grep output into less so you can scroll through the matches interactively.
 ```bash
 grep "gapA" ./results/illumina/klebs/mlst/SRR28370701.tsv | less
@@ -479,10 +471,7 @@ Displays the first 10 lines of the file to check column headers or initial data.
 ```bash
 head ./results/illumina/klebs/mlst/SRR28370701.tsv
 ```
-Displays the last 10 lines to quickly inspect the summary or last records.
-```bash
-tail ./results/illumina/klebs/mlst/SRR28370701.tsv
-```
+
 ### Batch MLST Typing
 
 We can perform MLST on multiple assemblies in a single step using a loop. This is useful when comparing our isolate to additional genomes, such as those from Pathogenwatch.
