@@ -269,10 +269,7 @@ Counted how many contigs we have
 ```bash
 grep -c ">" ./results/illumina/klebs/shovill/SRR28370701/contigs.fa
 ```
-Search for sequences containing a specific gene or motif:
-```bash
-grep "gene_name" ./results/illumina/klebs/shovill/SRR28370701/contigs.fa
-```
+
 ###  Assembly Evaluation
 
 Before downstream analyses, it is important to verify the quality of the assembled genome.
@@ -364,6 +361,23 @@ prokka \
     --outdir ./results/illumina/klebs/prokka \
     ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa
 ```
+Prokka generates a .txt summary file (usually SRR28370701.txt):
+```bash
+less ./results/illumina/klebs/prokka/SRR28370701.txt
+```
+Find all coding sequences (CDS):
+```bash
+grep "CDS" ./results/illumina/klebs/prokka/SRR28370701.gff | less
+```
+Search for tRNA genes:
+```bash
+grep "tRNA" ./results/illumina/klebs/prokka/SRR28370701.gff | less
+```
+List all annotated gene IDs:
+```bash
+grep "gene" ./results/illumina/klebs/prokka/SRR28370701.gff | awk '{print $9}' | less
+```
+
 ##  Add Additional Genomes from Pathogenwatch
 
 To better understand the genomic diversity and epidemiology of Klebsiella in Kenya, we will include **11 additional Klebsiella isolates** collected between January 14 and January 31, 2019.  
