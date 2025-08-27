@@ -818,11 +818,8 @@ rsync -avP <USERXX>@hpc.ilri.cgiar.org:~/ref.fa* \
 Copy the BAM file and its index for the aligned reads:
 
 ```bash
-rsync \
-    -avP \
-    --partial \
-    ./results/illumina/klebs/snippy/SRR28370701.bam* \
-    ~/
+rsync -avP ./results/illumina/klebs/snippy/SRR28370701/*.bam ~/
+
 ```
 Download alignment file into local computer
 ```bash
