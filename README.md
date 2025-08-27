@@ -689,6 +689,22 @@ amrfinder \
     --name SRR28370701 \
     > ./results/illumina/klebs/amrfinder/SRR28370701.tsv
 ```
+View the full results with paging
+```bash
+less ./results/illumina/klebs/amrfinder/SRR28370701.tsv
+`
+count the total number of detected AMR genes``
+```bash
+grep -v "^#" ./results/illumina/klebs/amrfinder/SRR28370701.tsv | wc -l
+```
+ Count AMR genes by drug class
+```bash
+grep -v "^#" ./results/illumina/klebs/amrfinder/SRR28370701.tsv \
+    | awk -F"\t" '{print $6}' \
+    | sort \
+    | uniq -c \
+    | sort -nr
+```
 
 ### Variant Calling and Consensus Assemblies
 - Before performing variant calling and generating consensus assemblies, we prepare the working environment by loading the required tools.
