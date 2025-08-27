@@ -377,7 +377,10 @@ List all annotated gene IDs:
 ```bash
 grep "gene" ./results/illumina/klebs/prokka/SRR28370701.gff | awk '{print $9}' | less
 ```
-
+Count how many CDS were annotated:
+```bash
+grep -c "CDS" ./results/illumina/klebs/prokka/SRR28370701.gff
+```
 ##  Add Additional Genomes from Pathogenwatch
 
 To better understand the genomic diversity and epidemiology of Klebsiella in Kenya, we will include **11 additional Klebsiella isolates** collected between January 14 and January 31, 2019.  
