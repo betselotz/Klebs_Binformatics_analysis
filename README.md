@@ -261,7 +261,18 @@ We rename it to include the **sample accession** for clarity:
 mv ./results/illumina/klebs/shovill/SRR28370701/contigs.fa \
    ./results/illumina/klebs/shovill/SRR28370701/SRR28370701.fa
 ```
-
+View large files page by page
+```bash
+less ./results/illumina/klebs/shovill/SRR28370701/contigs.fa
+```
+Counted how many contigs we have
+```bash
+grep -c ">" ./results/illumina/klebs/shovill/SRR28370701/contigs.fa
+```
+Search for sequences containing a specific gene or motif:
+```bash
+grep "gene_name" ./results/illumina/klebs/shovill/SRR28370701/contigs.fa
+```
 ###  Assembly Evaluation
 
 Before downstream analyses, it is important to verify the quality of the assembled genome.
