@@ -763,7 +763,7 @@ For Our Single Sample
 ```bash
 snippy \
   --reference ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.fna \
-  --ctgs ./results/illumina/klebs/snippy/SRR28370701.fa \
+  --ctgs ./results/illumina/klebs/snippy/SRR28370701/SRR28370701.fa \
   --cpus 2 \
   --ram 8 \
   --tmpdir "$TMPDIR" \
