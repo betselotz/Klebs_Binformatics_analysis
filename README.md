@@ -814,7 +814,12 @@ rsync \
     ./results/illumina/klebs/snippy/SRR28370701.bam* \
     ~/
 ```
-
+Download alignment file into local computer
+```bash
+rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370701.bam \
+    ~/AMR_training/group1/
+```
+    
 Visualisation of Snippy Variants using IGV
 1. Open [IGV](https://igv.org/app/) in your browser or desktop application.
 2. Load the genome file `ref.fa` in the **Genome** tab.
