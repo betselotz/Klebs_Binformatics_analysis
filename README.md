@@ -752,7 +752,7 @@ Contig-based variant calling with Snippy is a method where pre-assembled genome 
 For Our Single Sample
 ```bash
 snippy \
-  --reference ./results/illumina/klebs/snippy/GCF_000016305.1_ASM1630v1_genomic.gbff \
+  --reference ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.fna \
   --ctgs ./results/illumina/klebs/snippy/SRR28370701.fa \
   --cpus 2 \
   --ram 8 \
