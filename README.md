@@ -459,7 +459,7 @@ mlst \
     > ./results/illumina/klebs/mlst/SRR28370701.tsv
 ```
 Opens the MLST TSV file in a page
-# 1. View the full MLST output with paging
+View the full MLST output with page
 ```bash
 less ./results/illumina/klebs/mlst/SRR28370701.tsv
 ```
