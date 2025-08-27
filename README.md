@@ -324,11 +324,11 @@ rsync -avP --partial \
 ```                       
 #### 2. Download assembly to local machine
 ```bash  
-rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370682.fa \
+rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR28370701.fa \
     ~/AMR_training/group1/
 ```
 
-## Step 5: Genome Annotation with Prokka
+##  Genome Annotation with Prokka
 
 **Prokka** is a widely used tool for rapid **annotation of bacterial genomes**. It predicts coding sequences (CDS), rRNAs, tRNAs, and other features, and generates standardized output files like GFF, GBK, FAA, and FNA. Using Prokka ensures annotations are reproducible and compatible with downstream bioinformatics tools.
 
@@ -388,7 +388,7 @@ rsync -avP --partial \
     ./pathogenwatch/klebs/assemblies-to-test/
 ```
 
-##  Step 6: Pathogen Typing (MLST)
+##  Pathogen Typing (MLST)
 
 ### Introduction to Multi-Locus Sequence Typing (MLST)
 
