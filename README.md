@@ -591,7 +591,7 @@ python -m resfinder \
 ```
 View the full ResFinder results with paging
 ```bash
-less ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt
+less -S ./results/illumina/klebs/resfinder/SRR28370701/ResFinder_results_tab.txt
 ```
 Count the number of beta-lactam resistance genes
 ```bash
@@ -697,7 +697,7 @@ amrfinder \
 ```
 View the full results with paging
 ```bash
-less ./results/illumina/klebs/amrfinder/SRR28370701.tsv
+less -S  ./results/illumina/klebs/amrfinder/SRR28370701.tsv
 ```
 count the total number of detected AMR genes``
 ```bash
